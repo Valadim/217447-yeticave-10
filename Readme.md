@@ -1,7 +1,7 @@
 # Личный проект «YetiCave»
 
 * Студент: [Вадим Сакиев](https://up.htmlacademy.ru/php/10/user/217447).
-* Наставник: `Неизвестно`.
+* Наставник: [Алексей Стулов](https://htmlacademy.ru/profile/id25231).
 
 ---
 
