@@ -44,6 +44,14 @@ $ads = [
     ]
 ];
 
+function user_bet ($bet) {
+    $html = "<b class=\"rub\"> Р</b>";
+    if ($bet >= 1000) {
+        return number_format(ceil($bet), 0, ',', " ") . $html;
+    }
+    return ceil($bet) . $html;
+};
+
 ?>
 
 <!DOCTYPE html>
@@ -122,7 +130,7 @@ $ads = [
                     <div class="lot__state">
                         <div class="lot__rate">
                             <span class="lot__amount">Стартовая цена</span>
-                            <span class="lot__cost"><?= $val["price"] ?><b class="rub">р</b></span>
+                            <span class="lot__cost"><?= user_bet($val["price"]) ?></span>
                         </div>
                         <div class="lot__timer timer">
                             12:23
