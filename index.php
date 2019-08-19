@@ -12,24 +12,6 @@ $categories = [
     "other" => "Разное"
 ];
 
-//$categories = [
-//    "Доски и лыжи",
-//    "Крепления",
-//    "Ботинки",
-//    "Одежда",
-//    "Инструменты",
-//    "Разное"
-//];
-//
-//$classes = [
-//    "boards",
-//    "attachment",
-//    "boots",
-//    "clothing",
-//    "tools",
-//    "other"
-//];
-
 $ads = [
     [
         "name" => "2014 Rossignol District Snowboard",
@@ -69,16 +51,13 @@ $ads = [
     ]
 ];
 
-function user_bet($bet)
-{
+function user_bet($bet) {
     $html = "<b class=\"rub\"> Р</b>";
     if ($bet >= 1000) {
         return number_format(ceil($bet), 0, ',', " ") . $html;
     }
     return ceil($bet) . $html;
 }
-
-;
 
 ?>
 
