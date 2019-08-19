@@ -3,8 +3,6 @@
 require_once('templates/functions.php');
 require_once('templates/data.php');
 
-
-
 $page_content = include_template('main.php', [
     'categories' => $categories,
     'ads' => $ads
