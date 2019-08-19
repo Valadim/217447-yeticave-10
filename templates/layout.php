@@ -53,8 +53,8 @@
         <ul class="nav__list container">
             <!--заполните этот список из массива категорий-->
             <?php foreach ($categories as $key => $val): ?>
-                <li class="promo__item promo__item--<?= $key ?>">
-                    <a class="promo__link" href="pages/all-lots.html"><?= $val ?></a>
+                <li class="promo__item promo__item--<?= htmlspecialchars($key) ?>">
+                    <a class="promo__link" href="pages/all-lots.html"><?= htmlspecialchars($val) ?></a>
                 </li>
             <?php endforeach; ?>
         </ul>
