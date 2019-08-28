@@ -5,8 +5,8 @@
     <ul class="promo__list">
         <!--заполните этот список из массива категорий-->
         <?php foreach ($categories as $key => $val): ?>
-            <li class="promo__item promo__item--<?= htmlspecialchars($key) ?>">
-                <a class="promo__link" href="pages/all-lots.html"><?= htmlspecialchars($val) ?></a>
+            <li class="promo__item promo__item--<?= esc($key) ?>">
+                <a class="promo__link" href="pages/all-lots.html"><?= esc($val) ?></a>
             </li>
         <?php endforeach; ?>
     </ul>
@@ -17,7 +17,7 @@
     </div>
     <ul class="lots__list">
         <!--заполните этот список из массива с товарами-->
-        <?php foreach ($ads as $key => $val): ?>
+        <?php foreach ($lots as $val): ?>
             <?= include_template('lot.php', ['val' => $val]); ?>
         <?php endforeach; ?>
     </ul>

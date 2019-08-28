@@ -1,7 +1,6 @@
 <?php
 $is_auth = rand(0, 1);
-
-$user_name = "Вадим"; // укажите здесь ваше имя
+$user_name ="Вадим"; // укажите здесь ваше имя
 
 $categories = [
     "boards" => "Доски и лыжи",
@@ -12,7 +11,7 @@ $categories = [
     "other" => "Разное"
 ];
 
-$ads = [
+$lots = [
     [
         "name" => "2014 Rossignol District Snowboard",
         "category" => "Доски и лыжи",
