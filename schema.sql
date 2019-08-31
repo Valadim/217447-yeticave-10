@@ -30,6 +30,7 @@ CREATE TABLE lot (
   bid_step INT NOT NULL,
   user_id INT NOT NULL,
   category_id INT NOT NULL,
+  is_active TINYINT NOT NULL,
 
   FOREIGN KEY (user_id)  REFERENCES users (id) ON UPDATE CASCADE ON DELETE RESTRICT,
   FOREIGN KEY (category_id)  REFERENCES category (id) ON UPDATE CASCADE ON DELETE RESTRICT
