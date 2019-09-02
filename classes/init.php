@@ -2,8 +2,7 @@
 require_once 'functions.php';
 $db = require_once '../config/db.php';
 
-var_dump($db);
-$con = mysqli_connect($db['host'], 'root', $db['password'], $db['database']);
+$con = mysqli_connect($db['host'], $db['user'], $db['password'], $db['database']);
 mysqli_set_charset($con, "utf8");
 
 if ($con == false) {
