@@ -5,9 +5,9 @@
             горнолыжное снаряжение.</p>
         <ul class="promo__list">
             <!--заполните этот список из массива категорий-->
-            <?php foreach ($categories as $key => $val): ?>
-                <li class="promo__item promo__item--<?= esc($key) ?>">
-                    <a class="promo__link" href="pages/all-lots.html"><?= esc($val) ?></a>
+            <?php foreach ($categories as $cat): ?>
+                <li class="promo__item promo__item--<?= esc($cat['class']) ?>">
+                    <a class="promo__link" href="pages/all-lots.html"><?= esc($cat['name']) ?></a>
                 </li>
             <?php endforeach; ?>
         </ul>
