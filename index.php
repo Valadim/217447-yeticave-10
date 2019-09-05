@@ -4,35 +4,35 @@ require_once('classes/functions.php');
 require_once('classes/data.php');
 require_once('classes/init.php');
 
-if (!$con) {
-    $error = mysqli_connect_error();
-    $content = include_template('error.php', ['error' => $error]);
-} else {
-    $sql = 'SELECT `class`, `name` FROM category';
-    $result = mysqli_query($con, $sql);
-
-    if ($result) {
-        $categories = mysqli_fetch_all($result, MYSQLI_ASSOC);
-    } else {
-        $error = mysqli_error($con);
-        $content = include_template('error.php', ['error' => $error]);
-    }
-}
-
-if (!$con) {
-    $error = mysqli_connect_error();
-    $content = include_template('error.php', ['error' => $error]);
-} else {
-    $sql = 'SELECT `id`, `date`, `name`, `description`, `img_path`, `start_price`, `finish_date`, `bid_step`, `user_id`, `category_id`, `is_active` FROM lot';
-    $result = mysqli_query($con, $sql);
-
-    if ($result) {
-        $lots = mysqli_fetch_all($result, MYSQLI_ASSOC);
-    } else {
-        $error = mysqli_error($con);
-        $content = include_template('error.php', ['error' => $error]);
-    }
-}
+//if (!$con) {
+//    $error = mysqli_connect_error();
+//    $content = include_template('error.php', ['error' => $error]);
+//} else {
+//    $sql = 'SELECT `class`, `name` FROM category';
+//    $result = mysqli_query($con, $sql);
+//
+//    if ($result) {
+//        $categories = mysqli_fetch_all($result, MYSQLI_ASSOC);
+//    } else {
+//        $error = mysqli_error($con);
+//        $content = include_template('error.php', ['error' => $error]);
+//    }
+//}
+//
+//if (!$con) {
+//    $error = mysqli_connect_error();
+//    $content = include_template('error.php', ['error' => $error]);
+//} else {
+//    $sql = 'SELECT `id`, `date`, `name`, `description`, `img_path`, `start_price`, `finish_date`, `bid_step`, `user_id`, `category_id`, `is_active` FROM lot';
+//    $result = mysqli_query($con, $sql);
+//
+//    if ($result) {
+//        $lots = mysqli_fetch_all($result, MYSQLI_ASSOC);
+//    } else {
+//        $error = mysqli_error($con);
+//        $content = include_template('error.php', ['error' => $error]);
+//    }
+//}
 
 
 
