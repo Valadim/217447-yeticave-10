@@ -1,3 +1,5 @@
+DROP DATABASE `yeticave`;
+
 CREATE DATABASE yeticave
   DEFAULT CHARACTER SET utf8
   DEFAULT COLLATE utf8_general_ci;
@@ -29,6 +31,7 @@ CREATE TABLE lot (
   finish_date DATETIME NOT NULL,
   bid_step INT NOT NULL,
   user_id INT NOT NULL,
+  winner_id INT,
   category_id INT NOT NULL,
   is_active TINYINT NOT NULL,
 
