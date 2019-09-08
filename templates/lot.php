@@ -11,9 +11,15 @@
                 <span class="lot__amount">Стартовая цена</span>
                 <span class="lot__cost"><?= user_bet($val["start_price"]) ?></span>
             </div>
-            <div class="lot__timer timer">
-                <?= $val["finish_date"] ?>
+            <?php if (get_dt_range($val["finish_date"])[0] < 1): ?>
+            <div class="lot__timer timer timer--finishing">
+                <?= implode(':', get_dt_range($val["finish_date"])); ?>
             </div>
+            <?php else: ?>
+            <div class="lot__timer timer">
+                <?= implode(':', get_dt_range($val["finish_date"])); ?>
+            </div>
+            <?php endif; ?>
         </div>
     </div>
 </li>
