@@ -1,41 +1,35 @@
 <?php
 
 require_once('classes/functions.php');
-require_once('classes/data.php');
 require_once('classes/init.php');
 
-//if (!$con) {
-//    $error = mysqli_connect_error();
-//    $content = include_template('error.php', ['error' => $error]);
-//} else {
-//    $sql = 'SELECT `class`, `name` FROM category';
-//    $result = mysqli_query($con, $sql);
-//
-//    if ($result) {
-//        $categories = mysqli_fetch_all($result, MYSQLI_ASSOC);
-//    } else {
-//        $error = mysqli_error($con);
-//        $content = include_template('error.php', ['error' => $error]);
-//    }
-//}
-//
-//if (!$con) {
-//    $error = mysqli_connect_error();
-//    $content = include_template('error.php', ['error' => $error]);
-//} else {
-//    $sql = 'SELECT `id`, `date`, `name`, `description`, `img_path`, `start_price`, `finish_date`, `bid_step`, `user_id`, `category_id`, `is_active` FROM lot';
-//    $result = mysqli_query($con, $sql);
-//
-//    if ($result) {
-//        $lots = mysqli_fetch_all($result, MYSQLI_ASSOC);
-//    } else {
-//        $error = mysqli_error($con);
-//        $content = include_template('error.php', ['error' => $error]);
-//    }
-//}
+$is_auth = rand(0, 1);
+$user_name = "Вадим";
 
+if (!$con) {
+    $error = mysqli_connect_error();
+    $content = include_template('error.php', ['error' => $error]);
+} else {
 
+    $sql_category = 'SELECT `class`, `name` FROM category';
+    $result_category = mysqli_query($con, $sql_category);
 
+    $sql_lot = 'SELECT lot.id, lot.name, lot.start_price, lot.img_path, lot.finish_date, category.name AS category_name FROM lot '
+        . 'JOIN category ON lot.category_id = category.id '
+        . 'WHERE lot.finish_date > NOW() AND lot.winner_id IS NULL '
+        . 'GROUP BY lot.id '
+        . 'ORDER BY lot.date DESC';
+    $result_lot = mysqli_query($con, $sql_lot);
+
+    if ($result_category && $result_lot) {
+        $categories = mysqli_fetch_all($result_category, MYSQLI_ASSOC);
+        $lots = mysqli_fetch_all($result_lot, MYSQLI_ASSOC);
+
+    } else {
+        $error = mysqli_error($con);
+        $content = include_template('error.php', ['error' => $error]);
+    }
+}
 
 $page_content = include_template('main.php', [
     'categories' => $categories,
@@ -52,12 +46,6 @@ $layout_content = include_template('layout.php', [
 
 print($layout_content);
 
-print(include_template('index.php', [
-    'content' => $page_content,
-    'categories' => $categories,
-    'title' => 'YetiCave - Главная страница',
-    'user_name' => $user_name,
-    'is_auth' => $is_auth
-]));
+
 
 
