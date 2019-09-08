@@ -67,3 +67,21 @@ LEFT JOIN bid ON lot.id = bid.lot_id
 WHERE lot.finish_date > NOW() AND lot.winner_id IS NULL
 GROUP BY lot.id
 ORDER BY lot.date DESC;
+
+-- показать лот по его id. Получите также название категории, к которой принадлежит лот
+
+SELECT lot.*, category.name AS category_name FROM lot
+JOIN category ON lot.category_id = category.id
+WHERE lot.id = 1;
+
+-- обновить название лота по его идентификатору
+
+UPDATE lot SET lot.name = '2014 Rossignol District Snowboard редакция 1'
+WHERE lot.id = 1;
+
+-- получить список ставок для лота по его идентификатору с сортировкой по дате.
+
+SELECT bid.* FROM lot
+JOIN bid ON lot.id = bid.lot_id
+WHERE lot.id = 1
+ORDER BY bid.date DESC;
