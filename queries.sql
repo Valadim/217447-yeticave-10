@@ -61,7 +61,7 @@ SELECT * FROM `category`;
 
 -- получить самые новые, открытые лоты. Каждый лот должен включать название, стартовую цену, ссылку на изображение, цену, название категории;
 
-SELECT lot.name, lot.start_price, lot.img_path, category.name AS category_name, MAX(bid.price) AS current_price, COUNT(bid.lot_id) AS bid_count FROM lot
+SELECT lot.name, lot.start_price, lot.img_path, category.name AS category_name, IFNULL(MAX(bid.price), lot.start_price) AS current_price, COUNT(bid.lot_id) AS bid_count FROM lot
 LEFT JOIN category ON lot.category_id = category.id
 LEFT JOIN bid ON lot.id = bid.lot_id
 WHERE lot.finish_date > NOW() AND lot.winner_id IS NULL
