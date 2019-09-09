@@ -31,6 +31,10 @@ if (!$con) {
     }
 }
 
+$page_error = include_template('error.php', [
+    'error' => $error
+]);
+
 $page_content = include_template('main.php', [
     'categories' => $categories,
     'lots' => $lots
@@ -41,7 +45,8 @@ $layout_content = include_template('layout.php', [
     'categories' => $categories,
     'title' => 'YetiCave - Главная страница',
     'user_name' => $user_name,
-    'is_auth' => $is_auth
+    'is_auth' => $is_auth,
+    'error' => $page_error
 ]);
 
 print($layout_content);
