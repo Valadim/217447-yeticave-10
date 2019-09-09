@@ -8,7 +8,7 @@ $user_name = "Вадим";
 
 if (!$con) {
     $error = mysqli_connect_error();
-    $content = include_template('error.php', ['error' => $error]);
+    $page_content = include_template('error.php', ['error' => $error]);
 } else {
 
     $sql_category = 'SELECT `class`, `name` FROM category';
@@ -25,19 +25,19 @@ if (!$con) {
         $categories = mysqli_fetch_all($result_category, MYSQLI_ASSOC);
         $lots = mysqli_fetch_all($result_lot, MYSQLI_ASSOC);
 
+        $page_content = include_template('main.php', [
+            'categories' => $categories,
+            'lots' => $lots
+        ]);
+
     } else {
         $error = mysqli_error($con);
-        $content = include_template('error.php', ['error' => $error]);
+        $page_content = include_template('error.php', ['error' => $error]);
     }
 }
 
 $page_error = include_template('error.php', [
     'error' => $error
-]);
-
-$page_content = include_template('main.php', [
-    'categories' => $categories,
-    'lots' => $lots
 ]);
 
 $layout_content = include_template('layout.php', [
