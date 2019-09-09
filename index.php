@@ -1,7 +1,7 @@
 <?php
 
-require_once('classes/functions.php');
-require_once('classes/init.php');
+require_once('inc/functions.php');
+require_once('inc/init.php');
 
 $is_auth = rand(0, 1);
 $user_name = "Вадим";

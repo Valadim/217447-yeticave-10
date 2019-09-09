@@ -1,4 +1,4 @@
-<?php require_once('classes/init.php'); ?>
+<?php require_once('inc/init.php'); ?>
 <?php if (!$con): ?>
     <section class="promo">
         <h2 class="promo__title">Нужен стафф для катки?</h2>
