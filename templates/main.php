@@ -1,3 +1,4 @@
+<?php require_once('inc/init.php'); ?>
 <?php if (!$con): ?>
     <section class="promo">
         <h2 class="promo__title">Нужен стафф для катки?</h2>
@@ -24,13 +25,6 @@
         </ul>
     </section>
 <?php else: ?>
-    <div class="content__main-col">
-        <header class="content__header">
-            <h2 class="content__header-text">Ошибка Подлкючения к БД</h2>
-        </header>
-        <article class="gif-list">
-            <p class="error"><?= $error; ?></p>
-        </article>
-    </div>
+    <?= include_template('error.php', ['error' => $error]); ?>
 <?php endif; ?>
 
