@@ -4,7 +4,7 @@
     </div>
     <div class="lot__info">
         <span class="lot__category"><?= esc($val['category_name']) ?></span>
-        <h3 class="lot__title"><a class="text-link" href="pages/lot.html"><?= esc($val["name"]) ?></a>
+        <h3 class="lot__title"><a class="text-link" href="lot.php?id=<?= $val['id'] ?>"><?= esc($val["name"]) ?></a>
         </h3>
         <div class="lot__state">
             <div class="lot__rate">
