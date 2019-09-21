@@ -1,8 +1,20 @@
 <?php
-
 require_once('inc/functions.php');
 require_once('inc/init.php');
-require_once('inc/data.php');
+
+$is_auth = rand(0, 1);
+$user_name = "Вадим"; // укажите здесь ваше имя
+
+//Создайте новый сценарий для показа страницы лота — lot.php.-----------
+//Создайте новый шаблон, который будет подключаться в lot.php. Верстку для сценария взять из pages/lot.html.----------
+//Добавьте карточкам обьявлений ссылки на сценарий lot.php вместе с параметром запроса.-----------
+//Проверяйте существование параметра запроса с id лота.------------------
+//Сформируйте и выполните SQL на чтение записи из таблицы с лотами, где id лота равен полученному из параметра запроса. ------------------
+
+//Покажите информацию о лоте на странице.
+//Не забудьте выделять оставшееся до истечения лота время красным цветом. Добавляйте блоку div.lot__timer класс timer--finishing, если осталось меньше часа.
+//Если параметр запроса отсутствует, либо если по этому id не нашли ни одной записи, то вместо содержимого страницы возвращать код ответа 404.
+
 
 // Проверяем существование параметра запроса с id лота.
 if (!isset($_GET['id']) && !is_numeric($_GET['id']) && !$_GET['id'] > 0) {
@@ -13,124 +25,92 @@ if (!isset($_GET['id']) && !is_numeric($_GET['id']) && !$_GET['id'] > 0) {
     die();
 }
 
-$sql = 'SELECT name FROM category';
-$category = db_fetch_data($con, $sql, []);
-
-$user = $_SESSION['user']['id'];
-
-//CREATE TABLE lot (
-//    id INT NOT NULL PRIMARY KEY AUTO_INCREMENT,
-//  date TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-//  name VARCHAR(255) NOT NULL,
-//  description TEXT NOT NULL,
-//  img_path VARCHAR(255) NOT NULL,
-//  start_price INT NOT NULL,
-//  finish_date DATETIME NOT NULL,
-//  bid_step INT NOT NULL,
-//  user_id INT NOT NULL,
-//  winner_id INT,
-//  category_id INT NOT NULL,
-//  is_active TINYINT NOT NULL,
-
-//CREATE TABLE bid (
-//  id INT NOT NULL PRIMARY KEY AUTO_INCREMENT,
-//  date TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-//  price INT NOT NULL,
-//  user_id INT NOT NULL,
-//  lot_id INT NOT NULL,
-//
-//$sql_id = "SELECT l.name, l.img_path, l.start_price, l.bid_step, c.name c, l.finish_date, l.description, l.user_id, r.price rat, r.rate_user FROM lots l
+// Сформируйте и выполните SQL на чтение записи из таблицы с лотами, где id лота равен полученному из параметра запроса
+//$sql_lot_id = 'SELECT l.name, l.img_path, l.start_price, l.bid_step, c.name c, l.finish_date, l.description, l.user_id, b.price, b.user_id FROM lots l
 //    LEFT JOIN category c
 //    ON l.category_id = c.id
-//    LEFT JOIN rate r
-//    ON r.rate_lots = l.id
+//    LEFT JOIN bid b
+//    ON b.lot_id = l.id
 //    WHERE l.id = ?
-//    ORDER BY r.date_create DESC";
-//
-//// Сформируйте и выполните SQL на чтение записи из таблицы с лотами, где id лота равен полученному из параметра запроса.
-//$lot_id = db_fetch_data_assos($con, $sql_id, [$_GET['id']]);
-//if (!$lot_id) {
-//    http_response_code(404);
-//    $content = include_template('404.php',
-//        ['error' => '404 Страница не найдена']);
-//    print($content);
-//    die();
-//}
-//if ($lot_id["rat"]) {
-//    $lot_id['price'] = $lot_id['rat'];
-//}
-//$lot_id['min'] = $lot_id['price'] + $lot_id['step'];
-//$sql_rates = 'SELECT r.id, r.date_create, r.price, u.name FROM rate r
-//        LEFT JOIN user u
-//        ON u.id = r.rate_user
-//        WHERE r.rate_lots = ?
-//        ORDER BY r.date_create DESC';
-//$result = db_fetch_data($con, $sql_rates, [$_GET['id']]);
-//$count = count($result);
-//if ($_SERVER['REQUEST_METHOD'] == 'POST') {
-//    $required = ['cost'];
-//    $dict = ['cost' => 'Введите сумму'];
-//    $errors = [];
-//    if (empty($_POST['cost'])) {
-//        $errors['cost'] = 'form__item--invalid';
-//        $page_lot = include_template('lot.php', [
-//            'lots_id' => $lot_id,
-//            'category' => $category,
-//            'errors' => $errors,
-//            'dict' => $dict
-//        ]);
-//        print($page_lot);
-//        die();
-//    }
-//    if (!ctype_digit($_POST['cost'])) {
-//        $errors['cost'] = 'form__item--invalid';
-//        $dict['cost'] = 'Неккоректная сумма';
-//        $page_lot = include_template('lot.php', [
-//            'lots_id' => $lot_id,
-//            'category' => $category,
-//            'errors' => $errors,
-//            'dict' => $dict
-//        ]);
-//        print($page_lot);
-//        die();
-//    }
-//    if ($lot_id['min'] >= $_POST['cost']) {
-//        $errors['cost'] = 'form__item--invalid';
-//        $dict['cost'] = 'Ставка должна быть больше минимальной цены';
-//        $page_lot = include_template('lot.php', [
-//            'lots_id' => $lot_id,
-//            'category' => $category,
-//            'errors' => $errors,
-//            'dict' => $dict
-//        ]);
-//        print($page_lot);
-//        die();
-//    }
-//    $sql_rate = "INSERT INTO rate (date_create, price, rate_lots, rate_user)
-//                    VALUES (?, ?, ?, ?)";
-//    $result_rate = db_insert_data($con, $sql_rate,
-//        [date('Y.m.d H:i:s'), $_POST['cost'], $_GET['id'], $_SESSION['user']['id']]);
-//    check($result_rate);
-//    $lot_id['rate_user'] = $_SESSION['user']['id'];
-//    $count = $count + 1;
-//}
-//
+//    ORDER BY b.date DESC';
 
+
+//if (!$con) {
+//    $error = mysqli_connect_error();
+//    $page_content = include_template('error.php', ['error' => $error]);
+//} else {
+//
+//    $sql_lot_id = 'SELECT l.name, l.img_path, l.start_price, l.bid_step, c.name c, l.finish_date, l.description, l.user_id, b.price, b.user_id, b.date FROM lots l '
+//      .  'LEFT JOIN category c '
+//      .  'ON l.category_id = c.id '
+//      .  'LEFT JOIN bid b '
+//      .  'ON b.lot_id = l.id '
+//      .  'WHERE l.id = ? '
+//      .  'ORDER BY b.date DESC ';
+//    $result_lot_id = mysqli_query($con, $sql_lot_id);
+//
+//    if ($result_lot_id) {
+//        $lot_id = mysqli_fetch_all($result_lot_id, MYSQLI_ASSOC);
+//
+//        $page_content = include_template('main.php', [
+//            'categories' => $categories,
+//            'lots' => $lots
+//        ]);
+//    } else {
+//        $error = mysqli_error($con);
+//        $page_content = include_template('error.php', ['error' => $error]);
+//    }
+//}
+//
+//print_r($lot_id);
+
+
+
+if (!$con) {
+    $error = mysqli_connect_error();
+    $page_content = include_template('error.php', ['error' => $error]);
+} else {
+
+    $sql_category = 'SELECT `class`, `name` FROM category';
+    $result_category = mysqli_query($con, $sql_category);
+
+    $sql_lot = 'SELECT lot.id, lot.name, lot.start_price, lot.img_path, lot.finish_date, category.name AS category_name FROM lot '
+        . 'JOIN category ON lot.category_id = category.id '
+        . 'WHERE lot.finish_date > NOW() AND lot.winner_id IS NULL '
+        . 'GROUP BY lot.id '
+        . 'ORDER BY lot.date DESC';
+    $result_lot = mysqli_query($con, $sql_lot);
+
+    if ($result_category && $result_lot) {
+        $categories = mysqli_fetch_all($result_category, MYSQLI_ASSOC);
+        $lots = mysqli_fetch_all($result_lot, MYSQLI_ASSOC);
+
+        $page_content = include_template('main.php', [
+            'categories' => $categories,
+            'lots' => $lots
+        ]);
+
+    } else {
+        $error = mysqli_error($con);
+        $page_content = include_template('error.php', ['error' => $error]);
+    }
+}
+
+//Покажите информацию о лоте на странице.
 
 $navigation = include_template('main_nav.php', ['categories' => $categories]);
 
-$page_content = include_template('lot_tpl.php', ['navigation' => $navigation]);
-
-$layout_content = include_template('layout.php', [
+$lot_template = include_template('lot_tpl.php', [
     'content' => $page_content,
-    'categories' => $categories,
-    'title' => 'Название лота',
+    'navigation' => $navigation,
+    'lots' => $lots,
     'user_name' => $user_name,
     'is_auth' => $is_auth,
-    'error' => $page_error
+    'lot_title' => 'Тайтл лота'
 ]);
 
-print($layout_content);
+print($lot_template);
+
 
 
 
