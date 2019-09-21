@@ -1,6 +1,28 @@
 <?php
 
 /**
+ * Возвращает запрос из БД в виде ассоциативного массива
+ * @param string $sql запрос к базе данных
+ * @return array ассоциативный массив из БД
+ */
+function db_sql_assoc($sql)
+{
+//    $result = mysqli_query($con, $sql);
+//    return mysqli_fetch_all($result, MYSQLI_ASSOC);
+
+    if ($result) {
+        return mysqli_fetch_all($result, MYSQLI_ASSOC);
+    }
+
+    return mysqli_error($con);
+
+
+
+//    $result = mysqli_query($con, $sql);
+//    return $assoc = mysqli_fetch_all($result, MYSQLI_ASSOC);
+}
+
+/**
  * Определяет минимальную стаку
  * @param int $price Текущая цена
  * @param int $step Шаг ставки

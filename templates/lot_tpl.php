@@ -1,5 +1,3 @@
-<?php require_once('inc/init.php'); ?>
-<?php if (!$con): ?>
     <!DOCTYPE html>
     <html lang="ru">
     <head>
@@ -47,36 +45,36 @@
         <main>
             <?= $navigation ?>
             <section class="lot-item container">
-                <h2><?= esc($lots['name']) ?></h2>
+                <h2><?= esc($lot['name']) ?></h2>
                 <div class="lot-item__content">
                     <div class="lot-item__left">
                         <div class="lot-item__image">
-                            <img src="<?= esc($lotы["img_path"]) ?>" width="730" height="548" alt="Сноуборд">
+                            <img src="<?= esc($lot['img_path']) ?>" width="730" height="548" alt="Сноуборд">
                         </div>
-                        <p class="lot-item__category">Категория: <span><?= esc($lots['category_name']) ?></span></p>
-                        <p class="lot-item__description"><?= esc($lots['description']) ?></p>
+                        <p class="lot-item__category">Категория: <span><?= esc($lot['category_name']) ?></span></p>
+                        <p class="lot-item__description"><?= esc($lot['description']) ?></p>
                     </div>
                     <div class="lot-item__right">
                         <div class="lot-item__state">
 
                             <?php if (get_dt_range($lots["finish_date"])[0] < 1): ?>
                                 <div class="lot__timer timer timer--finishing">
-                                    <?= implode(':', get_dt_range($lots["finish_date"])); ?>
+                                    <?= implode(':', get_dt_range($lot["finish_date"])); ?>
                                 </div>
                             <?php else: ?>
                                 <div class="lot__timer timer">
-                                    <?= implode(':', get_dt_range($lots["finish_date"])); ?>
+                                    <?= implode(':', get_dt_range($lot["finish_date"])); ?>
                                 </div>
                             <?php endif; ?>
 
                             <div class="lot-item__cost-state">
                                 <div class="lot-item__rate">
                                     <span class="lot-item__amount">Текущая цена</span>
-                                    <span class="lot-item__cost"><?= user_bet($lots["start_price"]) ?></span>
+                                    <span class="lot-item__cost"><?= user_bet($lot["start_price"]) ?></span>
                                 </div>
                                 <div class="lot-item__min-cost">
-                                    Мин. ставка <span><?= user_bet(min_bid($lots["start_price"],
-                                            $lots["bid_step"])) ?></span>
+                                    Мин. ставка <span><?= user_bet(min_bid($lot["start_price"],
+                                            $lot["bid_step"])) ?></span>
                                 </div>
                             </div>
                             <form class="lot-item__form" action="https://echo.htmlacademy.ru" method="post"
@@ -213,8 +211,3 @@
 
     </body>
     </html>
-<?php else: ?>
-    <?= $content = include_template('404.php',
-        ['error' => 'Ошибка 404: Страница не найдена']);
-    print($content); ?>
-<?php endif; ?>
