@@ -2,28 +2,26 @@
 <html lang="ru">
 <head>
     <meta charset="UTF-8">
-    <title><?= $title; ?></title>
+    <title><?= $lot_title ?></title>
     <link href="../css/normalize.min.css" rel="stylesheet">
     <link href="../css/style.css" rel="stylesheet">
 </head>
 <body>
+
 <div class="page-wrapper">
 
     <header class="main-header">
         <div class="main-header__container container">
             <h1 class="visually-hidden">YetiCave</h1>
-            <a class="main-header__logo">
+            <a class="main-header__logo" href="index.html">
                 <img src="../img/logo.svg" width="160" height="39" alt="Логотип компании YetiCave">
             </a>
             <form class="main-header__search" method="get" action="https://echo.htmlacademy.ru" autocomplete="off">
                 <input type="search" name="search" placeholder="Поиск лота">
                 <input class="main-header__search-btn" type="submit" name="find" value="Найти">
             </form>
-            <a class="main-header__add-lot button" href="pages/add-lot.html">Добавить лот</a>
-
+            <a class="main-header__add-lot button" href="add-lot.html">Добавить лот</a>
             <nav class="user-menu">
-
-                <!-- здесь должен быть PHP код для показа меню и данных пользователя -->
                 <?php if ($is_auth == 1): ?>
                     <div class="user-menu__logged">
                         <p><?= esc($user_name); ?></p>
@@ -44,21 +42,114 @@
         </div>
     </header>
 
-    <main class="<?= $main_class; ?>"><?= $content; ?></main>
+    <main>
+        <?= $navigation ?>
+        <section class="lot-item container">
+            <h2><?= esc($lot['name']) ?></h2>
+            <div class="lot-item__content">
+                <div class="lot-item__left">
+                    <div class="lot-item__image">
+                        <img src="<?= esc($lot['img_path']) ?>" width="730" height="548" alt="Сноуборд">
+                    </div>
+                    <p class="lot-item__category">Категория: <span><?= esc($lot['category_name']) ?></span></p>
+                    <p class="lot-item__description"><?= esc($lot['description']) ?></p>
+                </div>
+                <div class="lot-item__right">
+                    <div class="lot-item__state">
+
+                        <?php if (get_dt_range($lot["finish_date"])[0] < 1): ?>
+                            <div class="lot__timer timer timer--finishing">
+                                <?= implode(':', get_dt_range($lot["finish_date"])); ?>
+                            </div>
+                        <?php else: ?>
+                            <div class="lot__timer timer">
+                                <?= implode(':', get_dt_range($lot["finish_date"])); ?>
+                            </div>
+                        <?php endif; ?>
+
+                        <div class="lot-item__cost-state">
+                            <div class="lot-item__rate">
+                                <span class="lot-item__amount">Текущая цена</span>
+                                <span class="lot-item__cost"><?= user_bet($lot["start_price"]) ?></span>
+                            </div>
+                            <div class="lot-item__min-cost">
+                                Мин. ставка <span><?= user_bet(min_bid($lot["start_price"], $lot["bid_step"])) ?></span>
+                            </div>
+                        </div>
+                        <form class="lot-item__form" action="https://echo.htmlacademy.ru" method="post"
+                              autocomplete="off">
+                            <p class="lot-item__form-item form__item form__item--inlotid">
+                                <label for="cost">Ваша ставка</label>
+                                <input id="cost" type="text" name="cost" placeholder="12 000">
+                                <span class="form__error">Введите наименование лота</span>
+                            </p>
+                            <button type="submit" class="button">Сделать ставку</button>
+                        </form>
+                    </div>
+                    <div class="history">
+                        <h3>История ставок (<span>10</span>)</h3>
+                        <table class="history__list">
+                            <tr class="history__item">
+                                <td class="history__name">Иван</td>
+                                <td class="history__price">10 999 р</td>
+                                <td class="history__time">5 минут назад</td>
+                            </tr>
+                            <tr class="history__item">
+                                <td class="history__name">Константин</td>
+                                <td class="history__price">10 999 р</td>
+                                <td class="history__time">20 минут назад</td>
+                            </tr>
+                            <tr class="history__item">
+                                <td class="history__name">Евгений</td>
+                                <td class="history__price">10 999 р</td>
+                                <td class="history__time">Час назад</td>
+                            </tr>
+                            <tr class="history__item">
+                                <td class="history__name">Игорь</td>
+                                <td class="history__price">10 999 р</td>
+                                <td class="history__time">19.03.17 в 08:21</td>
+                            </tr>
+                            <tr class="history__item">
+                                <td class="history__name">Енакентий</td>
+                                <td class="history__price">10 999 р</td>
+                                <td class="history__time">19.03.17 в 13:20</td>
+                            </tr>
+                            <tr class="history__item">
+                                <td class="history__name">Семён</td>
+                                <td class="history__price">10 999 р</td>
+                                <td class="history__time">19.03.17 в 12:20</td>
+                            </tr>
+                            <tr class="history__item">
+                                <td class="history__name">Илья</td>
+                                <td class="history__price">10 999 р</td>
+                                <td class="history__time">19.03.17 в 10:20</td>
+                            </tr>
+                            <tr class="history__item">
+                                <td class="history__name">Енакентий</td>
+                                <td class="history__price">10 999 р</td>
+                                <td class="history__time">19.03.17 в 13:20</td>
+                            </tr>
+                            <tr class="history__item">
+                                <td class="history__name">Семён</td>
+                                <td class="history__price">10 999 р</td>
+                                <td class="history__time">19.03.17 в 12:20</td>
+                            </tr>
+                            <tr class="history__item">
+                                <td class="history__name">Илья</td>
+                                <td class="history__price">10 999 р</td>
+                                <td class="history__time">19.03.17 в 10:20</td>
+                            </tr>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
 
 </div>
 
 <footer class="main-footer">
-    <nav class="nav">
-        <ul class="nav__list container">
-            <!--заполните этот список из массива категорий-->
-            <?php foreach ($categories as $cat): ?>
-                <li class="promo__item promo__item--<?= esc($cat['class']) ?>">
-                    <a class="promo__link" href="pages/all-lots.html"><?= esc($cat['name']) ?></a>
-                </li>
-            <?php endforeach; ?>
-        </ul>
-    </nav>
+    <?= $navigation ?>
     <div class="main-footer__bottom container">
         <div class="main-footer__copyright">
             <p>© 2019, YetiCave</p>
@@ -117,7 +208,5 @@
     </div>
 </footer>
 
-<script src="flatpickr.js"></script>
-<script src="script.js"></script>
 </body>
 </html>

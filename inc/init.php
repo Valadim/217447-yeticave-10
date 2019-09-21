@@ -1,14 +1,20 @@
 <?php
+
+ini_set('error_reporting', E_ALL);
+ini_set('display_errors', 1);
+ini_set('display_startup_errors', 1);
+
 $db = require_once('config/db.php');
 
 $con = mysqli_connect($db['host'], $db['user'], $db['password'], $db['database']);
 
-
-
 if (!$con) {
     $error = mysqli_connect_error();
     $content = include_template('error.php', ['error' => $error]);
-} else {
-
-    mysqli_set_charset($con, "utf8");
+    echo $content;
+    die;
 }
+
+mysqli_set_charset($con, "utf8");
+
+

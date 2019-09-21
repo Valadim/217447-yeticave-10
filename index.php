@@ -46,6 +46,7 @@ $layout_content = include_template('layout.php', [
     'title' => 'YetiCave - Главная страница',
     'user_name' => $user_name,
     'is_auth' => $is_auth,
+    'main_class' => 'container',
     'error' => $page_error
 ]);
 

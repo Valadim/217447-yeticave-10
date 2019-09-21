@@ -1,4 +1,38 @@
 <?php
+
+/**
+ * Возвращает запрос из БД в виде ассоциативного массива
+ * @param string $sql запрос к базе данных
+ * @return array ассоциативный массив из БД
+ */
+function db_sql_assoc($sql)
+{
+//    $result = mysqli_query($con, $sql);
+//    return mysqli_fetch_all($result, MYSQLI_ASSOC);
+
+    if ($result) {
+        return mysqli_fetch_all($result, MYSQLI_ASSOC);
+    }
+
+    return mysqli_error($con);
+
+
+
+//    $result = mysqli_query($con, $sql);
+//    return $assoc = mysqli_fetch_all($result, MYSQLI_ASSOC);
+}
+
+/**
+ * Определяет минимальную стаку
+ * @param int $price Текущая цена
+ * @param int $step Шаг ставки
+ * @return int Минимальная ставка
+ */
+function min_bid($price, $step): int
+{
+    return $price + $step;
+}
+
 /**
  * Определяет сколько осталось часов и минут до завершения лота
  * @param string $end_date Принимает дату завершения лота
@@ -17,6 +51,25 @@ function get_dt_range($end_date)
 
     return [$hours, $minutes];
 }
+
+/**
+ * Выполняет запрос к БД и возвращает результат в виде ассоциативного массива.
+ *
+ * @param mysqli $dbConnection Подключение к БД
+ * @param string $sqlQuery Строка запроса
+ * @return array Массив записей
+ */
+function dbFetchData(mysqli $dbConnection, string $sqlQuery): array
+{
+    $sqlResult = mysqli_query($dbConnection, $sqlQuery);
+
+    if (!$sqlResult) {
+        exit('Ошибка при работе с БД: ' . mysqli_error($dbConnection));
+    }
+
+    return mysqli_fetch_all($sqlResult, MYSQLI_ASSOC);
+}
+
 
 /**
  * Создает подготовленное выражение на основе готового SQL запроса и переданных данных

@@ -19,8 +19,8 @@
         </div>
         <ul class="lots__list">
             <!--заполните этот список из массива с товарами-->
-            <?php foreach ($lots as $val): ?>
-                <?= include_template('lot.php', ['val' => $val]); ?>
+            <?php foreach ($lots as $lot): ?>
+                <?= include_template('lot.php', ['lot' => $lot]); ?>
             <?php endforeach; ?>
         </ul>
     </section>
