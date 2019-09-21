@@ -25,6 +25,8 @@ if (!isset($_GET['id']) && !is_numeric($_GET['id']) && !$_GET['id'] > 0) {
     die();
 }
 
+print( "введенный id: " . $_GET[ 'id' ]);
+
 // Сформируйте и выполните SQL на чтение записи из таблицы с лотами, где id лота равен полученному из параметра запроса
 //$sql_lot_id = 'SELECT l.name, l.img_path, l.start_price, l.bid_step, c.name c, l.finish_date, l.description, l.user_id, b.price, b.user_id FROM lots l
 //    LEFT JOIN category c
@@ -64,7 +66,7 @@ if (!isset($_GET['id']) && !is_numeric($_GET['id']) && !$_GET['id'] > 0) {
 //
 //print_r($lot_id);
 
-
+$cur_id = $_GET[ 'id' ];
 
 if (!$con) {
     $error = mysqli_connect_error();
@@ -74,27 +76,23 @@ if (!$con) {
     $sql_category = 'SELECT `class`, `name` FROM category';
     $result_category = mysqli_query($con, $sql_category);
 
-    $sql_lot = 'SELECT lot.id, lot.name, lot.start_price, lot.img_path, lot.finish_date, category.name AS category_name FROM lot '
-        . 'JOIN category ON lot.category_id = category.id '
-        . 'WHERE lot.finish_date > NOW() AND lot.winner_id IS NULL '
-        . 'GROUP BY lot.id '
-        . 'ORDER BY lot.date DESC';
+    $sql_lot = "SELECT lot.id, lot.name, lot.start_price, lot.img_path, lot.finish_date, category.name AS category_name FROM lot
+    JOIN category ON lot.category_id = category.id
+    WHERE lot.id = $cur_id" ;
     $result_lot = mysqli_query($con, $sql_lot);
 
     if ($result_category && $result_lot) {
         $categories = mysqli_fetch_all($result_category, MYSQLI_ASSOC);
         $lots = mysqli_fetch_all($result_lot, MYSQLI_ASSOC);
 
-        $page_content = include_template('main.php', [
-            'categories' => $categories,
-            'lots' => $lots
-        ]);
 
     } else {
         $error = mysqli_error($con);
         $page_content = include_template('error.php', ['error' => $error]);
     }
 }
+
+print_r($lots);
 
 //Покажите информацию о лоте на странице.
 
