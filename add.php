@@ -53,10 +53,10 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         }
     }
 
-    if (isset($_FILES['gif_img']['name'])) {
-        $tmp_name = $_FILES['gif_img']['tmp_name'];
-        $path = $_FILES['gif_img']['name'];
-        $filename = uniqid() . '.gif';
+    if (isset($_FILES['img_path']['name'])) {
+        $tmp_name = $_FILES['img_path']['tmp_name'];
+        $path = $_FILES['img_path']['name'];
+        $filename = uniqid() . '.jpg';
 
         $finfo = finfo_open(FILEINFO_MIME_TYPE);
         $file_type = finfo_file($finfo, $tmp_name);
@@ -72,47 +72,37 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 
     if (count($errors)) {
         $page_content = include_template('add.php', ['gif' => $gif, 'errors' => $errors, 'categories' => $categories]);
-    }
-
-
-}
-
-
-if ($_SERVER['REQUEST_METHOD'] == 'POST') {
-    $lot = $_POST;
-    $filename = uniqid() . '.jpg';
-    $lot['img_path'] = $filename;
-    //$lot['lot-date'] = '2019-29-28 12:28:05';
-    move_uploaded_file($_FILES['lot-img']['tmp_name'], 'uploads/' . $filename);
-
-    $sql = 'INSERT INTO lot (user_id, name, category_id, description, start_price, bid_step, finish_date, img_path ) VALUES (?, ?, ?, ?, ?, ?, ?, ?)';
-
-    $stmt = db_get_prepare_stmt($con, $sql,
-        [
-            1,
-            $lot['lot-name'],
-            $lot['category'],
-            $lot['message'],
-            $lot['lot-rate'],
-            $lot['lot-step'],
-            $lot['lot-date'],
-            $lot['img_path']
-        ]);
-
-    $res = mysqli_stmt_execute($stmt);
-
-    if ($res) {
-        $lot_id = mysqli_insert_id($con);
-
-        header("Location: lot.php?id=" . $lot_id);
     } else {
-        $content = include_template('error.php', ['error' => mysqli_error($con)]);
-        print_r($lot);
+        $sql = 'INSERT INTO lot (user_id, name, category_id, description, start_price, bid_step, finish_date, img_path ) VALUES (?, ?, ?, ?, ?, ?, ?, ?)';
+
+        $stmt = db_get_prepare_stmt($con, $sql,
+            [
+                1,
+                $lot['lot-name'],
+                $lot['category'],
+                $lot['message'],
+                $lot['lot-rate'],
+                $lot['lot-step'],
+                $lot['lot-date'],
+                $lot['img_path']
+            ]);
+
+        $res = mysqli_stmt_execute($stmt);
+
+        if ($res) {
+            $lot_id = mysqli_insert_id($con);
+
+            header("Location: lot.php?id=" . $lot_id);
+        }
     }
+} else {
+    $content = include_template('error.php', ['error' => mysqli_error($con)]);
+    //print_r($lot);
 }
+
 
 $add_tpl = include_template('add_tpl.php', [
-    'categories' => $categories,
+    'categories' => [],
     'user_name' => $user_name,
     'is_auth' => $is_auth
     //'classname' => 'form__item--invalid'
@@ -122,6 +112,7 @@ $add_tpl = include_template('add_tpl.php', [
 print($add_tpl);
 
 
+
 //После отправки формы выполните валидацию. Руководствуйтесь правилами, описанными в ТЗ.
 //Если проверка формы выявила ошибки, то сделать следующее:
 //- в тег формы добавить класс form--invalid;
@@ -129,3 +120,37 @@ print($add_tpl);
 //- добавить контейнеру с этим полем класс form__item--invalid;
 //- в тег span.form__error этого контейнера записать текст ошибки. Например: «Заполните это поле».
 //Если проверка прошла успешно, то сформировать и выполнить SQL запрос на добавление нового лота, а затем переадресовать пользователя на страницу просмотра этого лота
+
+
+//if ($_SERVER['REQUEST_METHOD'] == 'POST') {
+//    $lot = $_POST;
+//    $filename = uniqid() . '.jpg';
+//    $lot['img_path'] = $filename;
+//    //$lot['lot-date'] = '2019-29-28 12:28:05';
+//    move_uploaded_file($_FILES['lot-img']['tmp_name'], 'uploads/' . $filename);
+//
+//    $sql = 'INSERT INTO lot (user_id, name, category_id, description, start_price, bid_step, finish_date, img_path ) VALUES (?, ?, ?, ?, ?, ?, ?, ?)';
+//
+//    $stmt = db_get_prepare_stmt($con, $sql,
+//        [
+//            1,
+//            $lot['lot-name'],
+//            $lot['category'],
+//            $lot['message'],
+//            $lot['lot-rate'],
+//            $lot['lot-step'],
+//            $lot['lot-date'],
+//            $lot['img_path']
+//        ]);
+//
+//    $res = mysqli_stmt_execute($stmt);
+//
+//    if ($res) {
+//        $lot_id = mysqli_insert_id($con);
+//
+//        header("Location: lot.php?id=" . $lot_id);
+//    } else {
+//        $content = include_template('error.php', ['error' => mysqli_error($con)]);
+//        print_r($lot);
+//    }
+//}
