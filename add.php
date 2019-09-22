@@ -5,17 +5,32 @@ require_once('inc/init.php');
 $is_auth = rand(0, 1);
 $user_name = "Вадим"; // укажите здесь ваше имя
 
+$sql_category = 'SELECT `id`, `name` FROM category';
+$categories = get_db_assoc($con, $sql_category);
 
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
-    $img = $_POST;
-
+    $lot = $_POST;
     $filename = uniqid() . '.jpg';
-    $img['path'] = $filename;
+    $lot['img_path'] = $filename;
+    $lot['lot-date'] = '2019-29-28 12:28:05';
     move_uploaded_file($_FILES['lot-img']['tmp_name'], 'uploads/' . $filename);
 
-    $sql = 'INSERT INTO lot (date, category_id, user_id, name, description, img_path, start_price, bid_step, finish_date ) VALUES (NOW(), ?, 1, ?, ?, ?, ?, ?, ?)';
+    $sql = 'INSERT INTO lot (date, user_id, name, category_id, description, start_price, bid_step, finish_date, img_path ) VALUES (NOW(), 1, ?, ?, ?, ?, ?, ?, ?)';
 
-    $stmt = db_get_prepare_stmt($con, $sql, $img);
+    //                                     INSERT         VALUES
+    //  [lot-create] => NOW()              date           NOW()
+    //  [lot-user] => 1                    user_id        1
+    //  [lot-name] => Panasonic            name           ?
+    //  [category] => 2                    category_id    ?
+    //  [message]  => Текст описания       description    ?
+    //  [lot-rate] => 1000                 start_price    ?
+    //  [lot-step] => 500                  bid_step       ?
+    //  [lot-date] => 2019-09-29           finish_date    ?
+    //  [img_path] => 5d8769d59fd69.jpg    img_path       ?
+    //  [lot-date] => 2019-09-28 12:28:05
+
+
+    $stmt = db_get_prepare_stmt($con, $sql, $lot);
     $res = mysqli_stmt_execute($stmt);
 
     if ($res) {
@@ -25,12 +40,10 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     }
     else {
         $content = include_template('error.php', ['error' => mysqli_error($con)]);
+        print_r($lot);
     }
 }
 
-
-$sql_category = 'SELECT `class`, `name` FROM category';
-$categories = get_db_assoc($con, $sql_category);
 
 $add_tpl = include_template('add_tpl.php', [
     'categories' => $categories,
@@ -39,7 +52,6 @@ $add_tpl = include_template('add_tpl.php', [
 ]);
 
 print($add_tpl);
-
 
 
 //После отправки формы выполните валидацию. Руководствуйтесь правилами, описанными в ТЗ.
