@@ -12,25 +12,22 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     $lot = $_POST;
     $filename = uniqid() . '.jpg';
     $lot['img_path'] = $filename;
-    $lot['lot-date'] = '2019-29-28 12:28:05';
+    //$lot['lot-date'] = '2019-29-28 12:28:05';
     move_uploaded_file($_FILES['lot-img']['tmp_name'], 'uploads/' . $filename);
 
-    $sql = 'INSERT INTO lot (date, user_id, name, category_id, description, start_price, bid_step, finish_date, img_path ) VALUES (NOW(), 1, ?, ?, ?, ?, ?, ?, ?)';
+    $sql = 'INSERT INTO lot (user_id, name, category_id, description, start_price, bid_step, finish_date, img_path ) VALUES (?, ?, ?, ?, ?, ?, ?, ?)';
 
-    //                                     INSERT         VALUES
-    //  [lot-create] => NOW()              date           NOW()
-    //  [lot-user] => 1                    user_id        1
-    //  [lot-name] => Panasonic            name           ?
-    //  [category] => 2                    category_id    ?
-    //  [message]  => Текст описания       description    ?
-    //  [lot-rate] => 1000                 start_price    ?
-    //  [lot-step] => 500                  bid_step       ?
-    //  [lot-date] => 2019-09-29           finish_date    ?
-    //  [img_path] => 5d8769d59fd69.jpg    img_path       ?
-    //  [lot-date] => 2019-09-28 12:28:05
+    $stmt = db_get_prepare_stmt($con, $sql,
+        [   1,
+            $lot['lot-name'],
+            $lot['category'],
+            $lot['message'],
+            $lot['lot-rate'],
+            $lot['lot-step'],
+            $lot['lot-date'],
+            $lot['img_path']
+    ]);
 
-
-    $stmt = db_get_prepare_stmt($con, $sql, $lot);
     $res = mysqli_stmt_execute($stmt);
 
     if ($res) {
@@ -43,7 +40,6 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         print_r($lot);
     }
 }
-
 
 $add_tpl = include_template('add_tpl.php', [
     'categories' => $categories,
