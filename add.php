@@ -87,34 +87,39 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     }
 
 
-    if (isset($_FILES['gif_img']['name'])) {
-        $tmp_name = $_FILES['gif_img']['tmp_name'];
-        $path = $_FILES['gif_img']['name'];
-        $filename = uniqid() . '.gif';
+//    if (isset($_FILES['gif_img']['name'])) {
+//        $tmp_name = $_FILES['gif_img']['tmp_name'];
+//        $path = $_FILES['gif_img']['name'];
+//        $filename = uniqid() . '.gif';
+//
+//        $finfo = finfo_open(FILEINFO_MIME_TYPE);
+//        $file_type = finfo_file($finfo, $tmp_name);
+//        if ($file_type !== "image/gif") {
+//            $errors['file'] = 'Загрузите картинку в формате GIF';
+//        } else {
+//            move_uploaded_file($tmp_name, 'uploads/' . $filename);
+//            $gif['path'] = $filename;
+//        }
+//    } else {
+//        $errors['file'] = 'Вы не загрузили файл';
+//    }
 
-        $finfo = finfo_open(FILEINFO_MIME_TYPE);
-        $file_type = finfo_file($finfo, $tmp_name);
-        if ($file_type !== "image/gif") {
-            $errors['file'] = 'Загрузите картинку в формате GIF';
-        } else {
-            move_uploaded_file($tmp_name, 'uploads/' . $filename);
-            $gif['path'] = $filename;
-        }
-    } else {
-        $errors['file'] = 'Вы не загрузили файл';
-    }
+
+
 
 //Проверим, был ли загружен файл
     if (isset($_FILES['image']['name'])) {
         $tmp_name = $_FILES['image']['tmp_name'];
-        $image = $_FILES['image']['name'];
+        $file_type = mime_content_type($tmp_name);
 
+
+//        $image = $_FILES['image']['name'];
+//        var_dump($tmp_name);
         //получим информацию о типе файла
 //        $finfo = finfo_open(FILEINFO_MIME_TYPE);
 //        $file_type = finfo_file($finfo, $tmp_name);
-        $file_type = mime_content_type($image);
-
 //        echo mime_content_type($image) . "\n";
+ //       var_dump($file_type);
 
 
         //Если тип загруженного файла не является jpeg, то добавляем новую ошибку в список ошибок валидации
@@ -146,7 +151,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     if (count($errors)) {
 
         //если были ошибки, то показываем их пользователю вместе с формой
-        $page_content = include_template('add-tpl.php', [
+        $page_content = include_template('add_tpl.php', [
             'lot' => $lot,
             'errors' => $errors,
             'cats' => $cats
