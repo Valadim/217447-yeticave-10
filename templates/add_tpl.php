@@ -69,6 +69,8 @@
 
 
         <form class="form form--add-lot container <?= count($errors) ? 'form--invalid' : '' ?>" action="add.php"
+
+
               method="post" enctype="multipart/form-data">
             <h2>Добавление лота</h2>
             <div class="form__container-two">
@@ -81,25 +83,31 @@
                            value="<?= getPostVal('name_lot'); ?>">
                     <span class="form__error"><?= $errors['name_lot'] ?? ""; ?></span>
                 </div>
+
+
                 <div class="form__item <?= isset($errors['category_id']) ? 'form__item--invalid' : '' ?>">
+
+
                     <label for="category">Категория <sup>*</sup></label>
                     <select class="<?= $classname; ?>" id="category_id" name="category_id">
                         <option>Выберите категорию</option>
                         <?php foreach ($cats as $cat): ?>
+
                             <option value="<?= $cat['id'] ?>"
-                                    <?php if ($cat['id'] == $lot['category_id']): ?>selected<?php endif; ?>>
+                                    <?php if ($cat['id'] == getPostVal($cat['id'])): ?>selected<?php endif; ?>>
                                 <?= esc($cat['name']); ?>
+
                             </option>
                         <?php endforeach; ?>
                     </select>
                     <span class="form__error"><?= $errors['category_id'] ?? ""; ?></span>
                 </div>
             </div>
+
+
             <div class="form__item form__item--wide <?= isset($errors['description']) ? 'form__item--invalid' : '' ?>">
                 <label for="description">Описание <sup>*</sup></label>
-                <textarea id="description" placeholder="Напишите описание лота" name="description">
-                <?= getPostVal('description'); ?>
-            </textarea>
+                <textarea id="description" placeholder="Напишите описание лота" name="description"><?= getPostVal('description'); ?></textarea>
                 <span class="form__error"><?= $errors['description'] ?? ""; ?></span>
             </div>
 
@@ -111,7 +119,7 @@
                     <label for="image" class="">
                         Добавить
                     </label>
-                    <span><?= $file_name; ?></span>
+
                 </div>
             </div>
 
@@ -136,7 +144,8 @@
                 <div class="form__item <?= isset($errors['expiration_date']) ? 'form__item--invalid' : '' ?>">
 
                     <label for="expiration_date">Дата окончания торгов <sup>*</sup></label>
-                    <input class="form__input-date" id="expiration_date" type="text" name="expiration_date" placeholder="Введите дату в формате ГГГГ-ММ-ДД"
+                    <input class="form__input-date" id="expiration_date" type="text" name="expiration_date"
+                           placeholder="Введите дату в формате ГГГГ-ММ-ДД"
                            value="<?= getPostVal('expiration_date'); ?>">
                     <span class="form__error"><?= $errors['expiration_date'] ?? ""; ?></span>
                 </div>
