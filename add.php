@@ -23,8 +23,46 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 
     //Скопируем POST массив в переменную $lot
     $lot = $_POST;
-    $name_lot = $_POST["name_lot"];
-    $description = $_POST["description"];
+
+//    if (isset($_POST["name_lot"])) {
+//        $name_lot = trim($_POST["name_lot"]);
+//    }
+//    if (empty($_POST["name_lot"])) {
+//        $name_lot = trim($_POST["name_lot"])
+//    };
+
+// if (empty(trim($_POST["name_lot"]))) {
+//        $name_lot = $_POST["name_lot"];
+//    };
+
+
+    if (!empty($_POST["name_lot"])) {
+        $name_lot_ = trim($_POST["name_lot"]);
+
+        if(!empty($name_lot)){
+            $name_lot = 'Ошибка валидации';
+        }
+    }
+
+    var_dump($name_lot);
+
+    if (!empty($_POST["description"])) {
+        trim($_POST["description"]);
+
+        if(!empty(trim($_POST["description"]))) {
+            $description = $_POST["description"];
+        }
+    }
+
+
+// 1) проверяешь есть ли элемент в массиве, не пустой ли он(если empty)
+//2)делаешь трим
+//3)снова проверяеш не пустой ли
+//делай все последовательно не усложняй насрать на вложенность условий
+
+
+    //*$name_lot = $_POST["name_lot"];
+    //$description = $_POST["description"];
     $initial_price = $_POST["initial_price"];
     $expiration_date = $_POST["expiration_date"];
     $step_rate = $_POST["step_rate"];
@@ -86,40 +124,11 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         }
     }
 
-
-//    if (isset($_FILES['gif_img']['name'])) {
-//        $tmp_name = $_FILES['gif_img']['tmp_name'];
-//        $path = $_FILES['gif_img']['name'];
-//        $filename = uniqid() . '.gif';
-//
-//        $finfo = finfo_open(FILEINFO_MIME_TYPE);
-//        $file_type = finfo_file($finfo, $tmp_name);
-//        if ($file_type !== "image/gif") {
-//            $errors['file'] = 'Загрузите картинку в формате GIF';
-//        } else {
-//            move_uploaded_file($tmp_name, 'uploads/' . $filename);
-//            $gif['path'] = $filename;
-//        }
-//    } else {
-//        $errors['file'] = 'Вы не загрузили файл';
-//    }
-
-
-
-
 //Проверим, был ли загружен файл
     if (isset($_FILES['image']['name'])) {
         $tmp_name = $_FILES['image']['tmp_name'];
         $file_type = mime_content_type($tmp_name);
-
-
-//        $image = $_FILES['image']['name'];
-//        var_dump($tmp_name);
-        //получим информацию о типе файла
-//        $finfo = finfo_open(FILEINFO_MIME_TYPE);
-//        $file_type = finfo_file($finfo, $tmp_name);
-//        echo mime_content_type($image) . "\n";
- //       var_dump($file_type);
+        $file_name = $_FILES['image']['name'];
 
 
         //Если тип загруженного файла не является jpeg, то добавляем новую ошибку в список ошибок валидации
@@ -187,6 +196,7 @@ $add_tpl = include_template('add_tpl.php', [
     'user_name' => $user_name,
     'title' => 'Добавление лота',
     'is_auth' => $is_auth,
+    'file_name' => $file_name
 ]);
 
 print($add_tpl);

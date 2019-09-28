@@ -68,7 +68,7 @@
         </nav>
 
 
-        <form class="form form--add-lot container <?= count($errors) ? 'form--invalid' : '' ?>" action="../add.php"
+        <form class="form form--add-lot container <?= count($errors) ? 'form--invalid' : '' ?>" action="add.php"
               method="post" enctype="multipart/form-data">
             <h2>Добавление лота</h2>
             <div class="form__container-two">
@@ -111,6 +111,7 @@
                     <label for="image" class="">
                         Добавить
                     </label>
+                    <span><?= $file_name; ?></span>
                 </div>
             </div>
 
@@ -135,8 +136,7 @@
                 <div class="form__item <?= isset($errors['expiration_date']) ? 'form__item--invalid' : '' ?>">
 
                     <label for="expiration_date">Дата окончания торгов <sup>*</sup></label>
-                    <input class="form__input-date" id="expiration_date" type="text" name="expiration_date"
-                           placeholder="Введите дату в формате ГГГГ-ММ-ДД"
+                    <input class="form__input-date" id="expiration_date" type="text" name="expiration_date" placeholder="Введите дату в формате ГГГГ-ММ-ДД"
                            value="<?= getPostVal('expiration_date'); ?>">
                     <span class="form__error"><?= $errors['expiration_date'] ?? ""; ?></span>
                 </div>
