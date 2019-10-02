@@ -16,48 +16,24 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             return validateEmail('email', 4, 24);
         },
         'name' => function () {
-            return validateText('name', 4, 24);
+            return validateLength('name', 4, 24);
         },
         'password' => function () {
-            return validateText('password', 4, 64);
+            return validateLength('password', 4, 64);
         },
         'message' => function () {
-            return validateText('message', 4, 500);
+            return validateLength('message', 4, 500);
         },
     ];
-
-
-
-    //Определим функции-помощники для валидации и поля, которые они должны обработать
-//    $rules = [
-//        'email' => function () {
-//            if (!filter_var($_POST['email'], FILTER_VALIDATE_EMAIL)) {
-//                return 'Email должен быть корректным';
-//            }
-//            return null;
-//        },
-//        'password' => function () {
-//            return validateLength('password', 4, 64);
-//        },
-//        'name' => function () {
-//            return validateLength('name', 4, 64);
-//        },
-//        'message' => function () {
-//            return validateLength('message', 4, 500);
-//        }
-//    ];
 
     foreach ($required as $key) {
 
         if (!empty($_POST[$key])) {
             $_POST[$key] = trim($_POST[$key]);
-
             if (empty($_POST[$key])) {
                 $errors[$key] = 'Это поле надо заполнить';
             } else {
                 $rule = $rules[$key];
-
-                /*Результат работы функций записывается в массив ошибок*/
                 $errors[$key] = $rule();
             }
         } else {
@@ -65,47 +41,49 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         }
     }
 
+    $email = mysqli_real_escape_string($con, $user['email']);
+    $sql = "SELECT id FROM users WHERE email = '$email'";
+    $res = mysqli_query($con, $sql);
+    if (mysqli_num_rows($res) > 0) {
+        $errors['email'] = 'Пользователь с этим email уже зарегистрирован';
+    }
+    $errors = array_filter($errors);
+
     //массив отфильтровываем, чтобы удалить от туда пустые значения и оставить только сообщения об ошибках
     $errors = array_filter($errors);
 
+    $sql = 'INSERT INTO users (email, password, username, contacts) VALUES (?, ?, ?, ?)';
 
-    //проверяем длину массива с ошибками
-    if (count($errors)) {
+    $user['password'] = password_hash($user['password'], PASSWORD_DEFAULT);
 
-        //если были ошибки, то показываем их пользователю вместе с формой
-        $page_content = include_template('add_tpl.php', ['errors' => $errors]);
+    $stmt = db_get_prepare_stmt($con, $sql, [
+        $user['email'],
+        $user['password'],
+        $user['name'],
+        $user['message']
+    ]);
+    $res = mysqli_stmt_execute($stmt);
+
+
+
+    if ($res) {
+        $lot_id = mysqli_insert_id($con);
+        header("Location: http://php.my");
     } else {
-
-        $sql = 'INSERT INTO users (email, password, username, contacts) VALUES (?, ?, ?, ?)';
-
-        $stmt = db_get_prepare_stmt($con, $sql, [
-            $user['email'],
-            $user['password'],
-            $user['name'],
-            $user['message']
-        ]);
-        $res = mysqli_stmt_execute($stmt);
-
-
-        if ($res) {
-            $lot_id = mysqli_insert_id($con);
-            header("Location: lot.php");
-        } else {
-            $content = include_template('error.php', ['error' => mysqli_error($con)]);
-            print_r($user);
-        }
+        $page_content = include_template('error.php', ['error' => mysqli_error($con)]);
     }
+
 }
 
 $navigation = include_template('main_nav.php', ['categories' => $categories]);
 
-$sign_up_tpl = include_template('sign_up_tpl.php', [
+$page_content = include_template('sign_up_tpl.php', [
     'navigation' => $navigation,
     'errors' => $errors
 ]);
 
 $layout_content = include_template('layout.php', [
-    'content' => $sign_up_tpl,
+    'content' => $page_content,
     'navigation' => $navigation,
     'title' => 'Регистрация аккаунта',
     'user_name' => $user_name,

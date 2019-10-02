@@ -1,50 +1,8 @@
 <?php
 
-
-/**
- * Функция проверяет корретность длинны вводимых данных в поле формы
- * в зависимости от необходимого размера символов, в случае ошибки
- * вернёт текст ошибки с указанием требований к вводимому тексту.
- *
- * @param string $name ключ элемента массива над которым необходимо произвести проверку
- * @param int $min минимальная длинна текста
- * @param int $max максимальная длинна текста
- * @return string в случае ложной проверки вернёт сообщение об ошибку которую надо исправить
- */
-function validateText($name, $min, $max)
-{
-    $result = '';
-    $len = mb_strlen($_POST[$name]);
-    $validate_field = $name;
-    if ($len < $min || $len > $max) {
-        if ($validate_field === 'lot_title') {
-            $field_text_error = 'Наименование лота должно быть от ' . $min . ' до ' . $max . ' символов';
-            $result = $field_text_error;
-        }
-        if ($validate_field === 'lot_description') {
-            $field_text_error = 'Описание лота должно быть от ' . $min . ' до ' . $max . ' символов';
-            $result = $field_text_error;
-        }
-        if ($validate_field === 'name') {
-            $field_text_error = 'Имя пользователя быть от ' . $min . 'vдоv' . $max . ' символов';
-            $result = $field_text_error;
-        }
-        if ($validate_field === 'password') {
-            $field_text_error = 'Длинна пароля должна быть от ' . $min . ' до ' . $max . ' символов';
-            $result = $field_text_error;
-        }
-        if ($validate_field === 'message') {
-            $field_text_error = 'Длинна контактных даннных должна быть от ' . $min . ' до ' . $max . ' символов';
-            $result = $field_text_error;
-        }
-    }
-    return $result;
-}
-
-
 function validateEmail($email, $min, $max)
 {
-    $result = false;
+    $result = '';
     $len = mb_strlen($_POST[$email]);
     if ($len < $min || $len > $max) {
         $result = 'Длинна E-mail должна быть от' . $min . 'до' . $max . 'символов';
