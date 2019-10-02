@@ -94,7 +94,7 @@
                         <?php foreach ($cats as $cat): ?>
 
                             <option value="<?= $cat['id'] ?>"
-                                    <?php if ($cat['id'] == getPostVal($cat['id'])): ?>selected<?php endif; ?>>
+                                    <?php if ($cat['id'] == getPostVal('category_id')): ?>selected<?php endif; ?>>
                                 <?= esc($cat['name']); ?>
 
                             </option>

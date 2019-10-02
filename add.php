@@ -47,12 +47,21 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         },
         'step_rate' => function () {
             if ((!is_numeric($_POST["step_rate"])) and ($_POST["step_rate"] > 0)) {
-                return "Шаг ставки должен быть числом ";
+                return "Шаг ставки должен быть числом";
             }
             return null;
         },
         'expiration_date' => function () {
-            return is_date_valid('expiration_date');
+            $date_now = time();
+            $date_end = strtotime($_POST['expiration_date']);
+            $date_diff = $date_end - $date_now;
+            $result = '';
+            if (!is_date_valid($_POST['expiration_date'])) {
+                $result = 'Введите число в формате ГГГГ-ММ-ДД';
+            } elseif ($date_diff < 86400) {
+                $result = 'Дата окончания торгов не может быть раньше через чем 24 часа';
+            }
+            return $result;
         }
     ];
 
@@ -61,7 +70,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         if (!empty($_POST[$key])) {
             $_POST[$key] = trim($_POST[$key]);
 
-            if(empty($_POST[$key])){
+            if (empty($_POST[$key])) {
                 $errors[$key] = 'Это поле надо заполнить';
             } else {
                 $rule = $rules[$key];
@@ -82,7 +91,6 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         $tmp_name = $_FILES['image']['tmp_name'];
         $file_type = mime_content_type($tmp_name);
         $file_name = $_FILES['image']['name'];
-
 
         //Если тип загруженного файла не является jpeg, то добавляем новую ошибку в список ошибок валидации
         if ($file_type != "image/jpeg" && $file_type != "image/png") {
@@ -112,13 +120,11 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             $filename = uniqid() . '.png';
         }
 
-
         $tmp_name = $_FILES['image']['tmp_name'];
         $file_type = mime_content_type($tmp_name);
 
         move_uploaded_file($tmp_name, 'uploads/' . $filename);
         $lot['image'] = $filename;
-
 
         $sql = 'INSERT INTO lot (user_id, name, category_id, description, start_price, bid_step, finish_date, img_path ) VALUES (?, ?, ?, ?, ?, ?, ?, ?)';
 
@@ -135,7 +141,6 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         $res = mysqli_stmt_execute($stmt);
 
 
-
         if ($res) {
             $lot_id = mysqli_insert_id($con);
             header("Location: lot.php?id=" . $lot_id);
@@ -148,7 +153,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 
 $add_tpl = include_template('add_tpl.php', [
     'cats' => $cats,
-   // 'lot' => $lot,
+    // 'lot' => $lot,
     'user_name' => $user_name,
     'title' => 'Добавление лота',
     'is_auth' => $is_auth,

@@ -54,8 +54,29 @@ function validateLength($name, $min, $max) {
 function is_date_valid(string $date) : bool {
     $format_to_check = 'Y-m-d';
     $dateTimeObj = date_create_from_format($format_to_check, $date);
-
     return $dateTimeObj !== false && array_sum(date_get_last_errors()) === 0;
+}
+
+
+/**
+ * Проверяет условие, чтобы дата размещения была на 24 больше размещения ставок
+ * Возращает ошибку если число не соотвествует формату ГГГГ-ММ-ДД
+ *
+ * @param string $date ключ масива даты окончания ставок
+ * @return string содержание ошибки валидации даты размещения лота
+ */
+function validateTimeFormat($date)
+{
+    $date_now = time();
+    $date_bate = strtotime($date);
+    $date_diff = $date_bate - $date_now;
+    $result = '';
+    if (is_date_valid($date)) {
+        $result = 'Введите число в формате ГГГГ-ММ-ДД';
+    } elseif ($date_diff < 86400) {
+        $result = 'Дата окончания торгов не может быть раньше через чем 24 часа';
+    }
+    return $result;
 }
 
 /**
