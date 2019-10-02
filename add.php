@@ -143,7 +143,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         $sql = 'INSERT INTO lot (user_id, name, category_id, description, start_price, bid_step, finish_date, img_path ) VALUES (?, ?, ?, ?, ?, ?, ?, ?)';
 
         $stmt = db_get_prepare_stmt($con, $sql, [
-            1,
+            $_SESSION['user']["id"],
             $lot['name_lot'],
             $lot['category_id'],
             $lot['description'],

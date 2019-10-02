@@ -3,72 +3,28 @@
 require_once('inc/functions.php');
 require_once('inc/init.php');
 
-$errors = [];
 
-//
-//if ($_SERVER['REQUEST_METHOD'] == 'POST') {
-//
-//    $form = $_POST;
-//
-//    $required = ['email', 'password'];
-//
-//    $rules = [
-//        'email' => function () {
-//            return validateEmail('email', 4, 24);
-//        },
-//        'password' => function () {
-//            return validateLength('password', 4, 64);
-//        }
-//    ];
-//
-//    foreach ($required as $key) {
-//
-//        if (!empty($_POST[$key])) {
-//            $_POST[$key] = trim($_POST[$key]);
-//            if (empty($_POST[$key])) {
-//                $errors[$key] = 'Это поле надо заполнить';
-//            } else {
-//                $rule = $rules[$key];
-//                $errors[$key] = $rule();
-//            }
-//        } else {
-//            $errors[$key] = 'Это поле надо заполнить';
-//        }
-//    }
-//
-//    $email = mysqli_real_escape_string($con, $form['email']);
-//    $sql = "SELECT * FROM users WHERE email = '$email'";
-//    $res = mysqli_query($con, $sql);
-//
-//    var_dump($res);
-//
-//    $user = $res ? mysqli_fetch_array($res, MYSQLI_ASSOC) : null;
-//
-//    if (!count($errors) and $user) {
-//        if (password_verify($form['password'], $user['password'])) {
-//            $_SESSION['user'] = $user;
-//        } else {
-//            $errors['password'] = 'Неверный пароль';
-//        }
-//    } else {
-//        $errors['email'] = 'Такой пользователь не найден';
-//    }
-//
-//    if (count($errors)) {
-//        $page_content = include_template('enter.php', ['form' => $form, 'errors' => $errors]);
-//    } else {
-//        header("Location: /index.php");
-//        exit();
-//    }
-//
-//} else {
-//        $page_content = include_template('enter.php', []);
-//
-//        if (isset($_SESSION['user'])) {
-//            header("Location: /index.php");
-//            exit();
-//        }
-//    }
+if (!empty($_SESSION)) {
+    http_response_code(403);
+
+    $page_content = include_template('error.php', [
+        'navigation' => $navigation,
+        'error' => 'Вы уже зарегистрированны на сайте',
+        'error_text' => 'Повторно зарегистрироваться не получиться'
+    ]);
+
+    $layout_content = include_template('layout.php', [
+        'content' => $page_content,
+        'navigation' => $navigation,
+        'title' => 'Ошибка 403. В доступе отказано'
+    ]);
+
+    print($layout_content);
+    exit();
+}
+
+
+$errors = [];
 
 
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
