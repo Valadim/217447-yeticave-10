@@ -2,11 +2,6 @@
 require_once('inc/functions.php');
 require_once('inc/init.php');
 
-$is_auth = rand(0, 1);
-$user_name = "Вадим"; // укажите здесь ваше имя
-
-
-
 $sql = 'SELECT * FROM category';
 $result = mysqli_query($con, $sql);
 $cats_ids = [];
@@ -51,16 +46,17 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             return null;
         },
         'expiration_date' => function () {
-            $date_now = time();
-            $date_end = strtotime($_POST['expiration_date']);
-            $date_diff = $date_end - $date_now;
-            $result = '';
             if (!is_date_valid($_POST['expiration_date'])) {
-                $result = 'Введите число в формате ГГГГ-ММ-ДД';
-            } elseif ($date_diff < 86400) {
-                $result = 'Дата окончания торгов не может быть раньше через чем 24 часа';
+                return 'Введите число в формате ГГГГ-ММ-ДД';
+            } else {
+                $date_now = strtotime('now');
+                $date_end = strtotime($_POST['expiration_date']);
+
+                if ($date_end <= $date_now) {
+                    return 'Дата окончания торгов не может быть раньше чем завтра';
+                }
             }
-            return $result;
+            return null;
         }
     ];
 
@@ -167,3 +163,21 @@ $layout_content = include_template('layout.php', [
 ]);
 
 print($layout_content);
+
+
+//function ()
+//{
+//    if (!is_date_valid($_POST['expiration_date'])) {
+//        return 'Введите число в формате ГГГГ-ММ-ДД';
+//    } else {
+//        $date_now = strtotime('now');
+//        $date_end = strtotime($_POST['expiration_date']);
+//
+//        if ($date_end <= $date_now) {
+//            return 'Дата окончания торгов не может быть раньше через завтра';
+//        }
+//    }
+//    return null;
+//}
+
+
