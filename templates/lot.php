@@ -1,6 +1,6 @@
 <li class="lots__item lot">
     <div class="lot__image">
-        <img src="<?= $lot["img_path"] ?>" width="350" height="260" alt="">
+        <img src="<?= 'uploads/' . $lot["img_path"] ?>" width="350" height="260" alt="">
     </div>
     <div class="lot__info">
         <span class="lot__category"><?= esc($lot['category_name']) ?></span>

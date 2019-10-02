@@ -5,8 +5,7 @@ require_once('inc/init.php');
 $is_auth = rand(0, 1);
 $user_name = "Вадим"; // укажите здесь ваше имя
 
-//$sql_category = 'SELECT `id`, `name` FROM category';
-//$categories = get_db_assoc($con, $sql_category);
+
 
 $sql = 'SELECT * FROM category';
 $result = mysqli_query($con, $sql);
@@ -151,13 +150,20 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     }
 }
 
+$navigation = include_template('main_nav.php', ['categories' => $categories]);
+
 $add_tpl = include_template('add_tpl.php', [
     'cats' => $cats,
-    // 'lot' => $lot,
-    'user_name' => $user_name,
-    'title' => 'Добавление лота',
-    'is_auth' => $is_auth,
+    'navigation' => $navigation,
     'errors' => $errors
 ]);
 
-print($add_tpl);
+$layout_content = include_template('layout.php', [
+    'content' => $add_tpl,
+    'navigation' => $navigation,
+    'title' => 'Добавление лота',
+    'user_name' => $user_name,
+    'is_auth' => $is_auth
+]);
+
+print($layout_content);

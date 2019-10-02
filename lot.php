@@ -2,9 +2,6 @@
 require_once('inc/functions.php');
 require_once('inc/init.php');
 
-$is_auth = rand(0, 1);
-$user_name = "Вадим"; // укажите здесь ваше имя
-
 if (!isset($_GET['id']) && !is_numeric($_GET['id']) && !$_GET['id'] > 0) {
     http_response_code(404);
     $content = include_template('404.php',
@@ -12,15 +9,6 @@ if (!isset($_GET['id']) && !is_numeric($_GET['id']) && !$_GET['id'] > 0) {
     print($content);
     die();
 }
-
-// Сформируйте и выполните SQL на чтение записи из таблицы с лотами, где id лота равен полученному из параметра запроса
-//$sql_lot_id = 'SELECT l.name, l.img_path, l.start_price, l.bid_step, c.name c, l.finish_date, l.description, l.user_id, b.price, b.user_id FROM lots l
-//    LEFT JOIN category c
-//    ON l.category_id = c.id
-//    LEFT JOIN bid b
-//    ON b.lot_id = l.id
-//    WHERE l.id = ?
-//    ORDER BY b.date DESC';
 
 $cur_id = $_GET['id'];
 
@@ -45,13 +33,18 @@ $navigation = include_template('main_nav.php', ['categories' => $categories]);
 
 $lot_template = include_template('lot_tpl.php', [
     'navigation' => $navigation,
-    'lot' => $lot,
-    'user_name' => $user_name,
-    'is_auth' => $is_auth,
-    'lot_title' => 'Тайтл лота'
+    'lot' => $lot
 ]);
 
-print($lot_template);
+$layout_content = include_template('layout.php', [
+    'content' => $lot_template,
+    'navigation' => $navigation,
+    'title' => 'Тайтл лота',
+    'user_name' => $user_name,
+    'is_auth' => $is_auth
+]);
+
+print($layout_content);
 
 
 

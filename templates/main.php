@@ -1,5 +1,4 @@
-<?php require_once('inc/init.php'); ?>
-<?php if (!$con): ?>
+<main class="container">
     <section class="promo">
         <h2 class="promo__title">Нужен стафф для катки?</h2>
         <p class="promo__text">На нашем интернет-аукционе ты найдёшь самое эксклюзивное сноубордическое и
@@ -24,7 +23,8 @@
             <?php endforeach; ?>
         </ul>
     </section>
-<?php else: ?>
-    <?= include_template('error.php', ['error' => $error]); ?>
-<?php endif; ?>
+</main>
+
+
+
 

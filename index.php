@@ -3,8 +3,7 @@
 require_once('inc/functions.php');
 require_once('inc/init.php');
 
-$is_auth = rand(0, 1);
-$user_name = "Вадим";
+
 
 if (!$con) {
     $error = mysqli_connect_error();
@@ -35,19 +34,21 @@ if (!$con) {
         $page_content = include_template('error.php', ['error' => $error]);
     }
 }
-
+$error = '';
 $page_error = include_template('error.php', [
     'error' => $error
 ]);
 
+$navigation = include_template('promo_nav.php', ['categories' => $categories]);
+
 $layout_content = include_template('layout.php', [
     'content' => $page_content,
-    'categories' => $categories,
     'title' => 'YetiCave - Главная страница',
     'user_name' => $user_name,
     'is_auth' => $is_auth,
     'main_class' => 'container',
-    'error' => $page_error
+    'error' => $page_error,
+    'navigation' => $navigation
 ]);
 
 print($layout_content);

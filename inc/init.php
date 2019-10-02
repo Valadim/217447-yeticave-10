@@ -17,4 +17,9 @@ if (!$con) {
 
 mysqli_set_charset($con, "utf8");
 
+$is_auth = rand(0, 1);
+$user_name = "Вадим";
+
+$sql_category = 'SELECT `id`, `name` FROM category';
+$categories = get_db_assoc($con, $sql_category);
 
