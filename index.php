@@ -3,8 +3,6 @@
 require_once('inc/functions.php');
 require_once('inc/init.php');
 
-
-
 if (!$con) {
     $error = mysqli_connect_error();
     $page_content = include_template('error.php', ['error' => $error]);

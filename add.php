@@ -2,11 +2,6 @@
 require_once('inc/functions.php');
 require_once('inc/init.php');
 
-$is_auth = rand(0, 1);
-$user_name = "Вадим"; // укажите здесь ваше имя
-
-
-
 $sql = 'SELECT * FROM category';
 $result = mysqli_query($con, $sql);
 $cats_ids = [];
