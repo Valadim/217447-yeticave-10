@@ -2,7 +2,7 @@
 require_once('inc/functions.php');
 require_once('inc/init.php');
 
-if (!isset($_SESSION['name'])) {
+if (empty($_SESSION)) {
     http_response_code(403);
 
     $page_content = include_template('error.php', [
@@ -20,7 +20,6 @@ if (!isset($_SESSION['name'])) {
     print($layout_content);
     exit();
 }
-
 
 $sql = 'SELECT * FROM category';
 $result = mysqli_query($con, $sql);
