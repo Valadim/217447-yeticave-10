@@ -2,6 +2,25 @@
 require_once('inc/functions.php');
 require_once('inc/init.php');
 
+if (empty($_SESSION)) {
+    http_response_code(403);
+
+    $page_content = include_template('error.php', [
+        'navigation' => $navigation,
+        'error' => '403 Доступ запрещен',
+        'error_text' => 'Авторизуйтесь для добавления лота'
+    ]);
+
+    $layout_content = include_template('layout.php', [
+        'content' => $page_content,
+        'navigation' => $navigation,
+        'title' => 'Ошибка 403. В доступе отказано'
+    ]);
+
+    print($layout_content);
+    exit();
+}
+
 $sql = 'SELECT * FROM category';
 $result = mysqli_query($con, $sql);
 $cats_ids = [];
@@ -124,7 +143,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         $sql = 'INSERT INTO lot (user_id, name, category_id, description, start_price, bid_step, finish_date, img_path ) VALUES (?, ?, ?, ?, ?, ?, ?, ?)';
 
         $stmt = db_get_prepare_stmt($con, $sql, [
-            1,
+            $_SESSION['user']["id"],
             $lot['name_lot'],
             $lot['category_id'],
             $lot['description'],
@@ -164,20 +183,5 @@ $layout_content = include_template('layout.php', [
 
 print($layout_content);
 
-
-//function ()
-//{
-//    if (!is_date_valid($_POST['expiration_date'])) {
-//        return 'Введите число в формате ГГГГ-ММ-ДД';
-//    } else {
-//        $date_now = strtotime('now');
-//        $date_end = strtotime($_POST['expiration_date']);
-//
-//        if ($date_end <= $date_now) {
-//            return 'Дата окончания торгов не может быть раньше через завтра';
-//        }
-//    }
-//    return null;
-//}
 
 

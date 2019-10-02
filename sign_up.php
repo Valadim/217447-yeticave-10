@@ -68,7 +68,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 
     if ($res) {
         $lot_id = mysqli_insert_id($con);
-        header("Location: http://php.my");
+        header("Location: login.php");
     } else {
         $page_content = include_template('error.php', ['error' => mysqli_error($con)]);
     }
