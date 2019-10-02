@@ -19,7 +19,7 @@
                 <input type="search" name="search" placeholder="Поиск лота">
                 <input class="main-header__search-btn" type="submit" name="find" value="Найти">
             </form>
-            <a class="main-header__add-lot button" href="pages/add-lot.html">Добавить лот</a>
+            <a class="main-header__add-lot button" href="add.php">Добавить лот</a>
 
             <nav class="user-menu">
 
@@ -44,21 +44,12 @@
         </div>
     </header>
 
-    <main class="<?= $main_class; ?>"><?= $content; ?></main>
+    <?= $content; ?>
 
 </div>
 
 <footer class="main-footer">
-    <nav class="nav">
-        <ul class="nav__list container">
-            <!--заполните этот список из массива категорий-->
-            <?php foreach ($categories as $cat): ?>
-                <li class="promo__item promo__item--<?= esc($cat['class']) ?>">
-                    <a class="promo__link" href="pages/all-lots.html"><?= esc($cat['name']) ?></a>
-                </li>
-            <?php endforeach; ?>
-        </ul>
-    </nav>
+    <?= $navigation; ?>
     <div class="main-footer__bottom container">
         <div class="main-footer__copyright">
             <p>© 2019, YetiCave</p>

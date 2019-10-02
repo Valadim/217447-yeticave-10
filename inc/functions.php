@@ -1,25 +1,99 @@
 <?php
 
 /**
- * Возвращает запрос из БД в виде ассоциативного массива
- * @param string $sql запрос к базе данных
- * @return array ассоциативный массив из БД
+ * функцию, для получения значения поля
+ * @param string $name принимает значение
+ * @return string возвращает заполненные поля
  */
-function db_sql_assoc($sql)
+function getPostVal($name) {
+    return $_POST[$name] ?? "";
+}
+
+function validateFilled($name) {
+    if (empty($_POST[$name])) {
+        return "Это поле должно быть заполнено";
+    }
+
+    return null;
+}
+
+function validateCategory($name, $allowed_list) {
+    $id = $_POST[$name];
+
+    if (!in_array($id, $allowed_list)) {
+        return "Указана несуществующая категория";
+    }
+
+    return null;
+}
+
+function validateLength($name, $min, $max) {
+    $len = strlen($_POST[$name]);
+
+    if ($len < $min or $len > $max) {
+        return "Значение должно быть от $min до $max символов";
+    }
+
+    return null;
+}
+
+/**
+ * Проверяет переданную дату на соответствие формату 'ГГГГ-ММ-ДД'
+ *
+ * Примеры использования:
+ * is_date_valid('2019-01-01'); // true
+ * is_date_valid('2016-02-29'); // true
+ * is_date_valid('2019-04-31'); // false
+ * is_date_valid('10.10.2010'); // false
+ * is_date_valid('10/10/2010'); // false
+ *
+ * @param string $date Дата в виде строки
+ *
+ * @return bool true при совпадении с форматом 'ГГГГ-ММ-ДД', иначе false
+ */
+function is_date_valid(string $date) : bool {
+    $format_to_check = 'Y-m-d';
+    $dateTimeObj = date_create_from_format($format_to_check, $date);
+    return $dateTimeObj !== false && array_sum(date_get_last_errors()) === 0;
+}
+
+
+/**
+ * Проверяет условие, чтобы дата размещения была на 24 больше размещения ставок
+ * Возращает ошибку если число не соотвествует формату ГГГГ-ММ-ДД
+ *
+ * @param string $date ключ масива даты окончания ставок
+ * @return string содержание ошибки валидации даты размещения лота
+ */
+function validateTimeFormat($date)
 {
-//    $result = mysqli_query($con, $sql);
-//    return mysqli_fetch_all($result, MYSQLI_ASSOC);
+    $date_now = time();
+    $date_bate = strtotime($date);
+    $date_diff = $date_bate - $date_now;
+    $result = '';
+    if (is_date_valid($date)) {
+        $result = 'Введите число в формате ГГГГ-ММ-ДД';
+    } elseif ($date_diff < 86400) {
+        $result = 'Дата окончания торгов не может быть раньше через чем 24 часа';
+    }
+    return $result;
+}
+
+/**
+ * Возвращает запрос из БД в виде ассоциативного массива
+ * @param string $link ресурс соединения
+ * @param string $sql запрос к базе данных
+ * @return array ассоциативный массив из БД или страницу ошибки
+ */
+function get_db_assoc($link, $sql) {
+    $result = mysqli_query($link, $sql);
 
     if ($result) {
         return mysqli_fetch_all($result, MYSQLI_ASSOC);
+    } else {
+        $error = mysqli_error($link);
+        return include_template('error.php', ['error' => $error]);
     }
-
-    return mysqli_error($con);
-
-
-
-//    $result = mysqli_query($con, $sql);
-//    return $assoc = mysqli_fetch_all($result, MYSQLI_ASSOC);
 }
 
 /**
@@ -28,7 +102,7 @@ function db_sql_assoc($sql)
  * @param int $step Шаг ставки
  * @return int Минимальная ставка
  */
-function min_bid($price, $step): int
+function min_bid($price, $step)
 {
     return $price + $step;
 }
