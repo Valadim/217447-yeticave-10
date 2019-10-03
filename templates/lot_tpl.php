@@ -34,77 +34,53 @@
                                 <span class="lot-item__cost"><?= user_bet($lot["start_price"]) ?></span>
                             </div>
                             <div class="lot-item__min-cost">
-                                Мин. ставка <span><?= user_bet(min_bid($lot["start_price"], $lot["bid_step"])) ?></span>
+                                Мин. ставка <span><?= amount_formatting(min_bid($sum_bet['sum_bet'],
+                                        $lot['bid_step']), 0) ?></span>
                             </div>
                         </div>
-                        <form class="lot-item__form" action="https://echo.htmlacademy.ru" method="post"
-                              autocomplete="off">
-                            <p class="lot-item__form-item form__item form__item--inlotid">
-                                <label for="cost">Ваша ставка</label>
-                                <input id="cost" type="text" name="cost" placeholder="12 000">
-                                <span class="form__error">Введите наименование лота</span>
-                            </p>
-                            <button type="submit" class="button">Сделать ставку</button>
-                        </form>
+
+                        <?php $check_user_bet = false ?>
+                        <?php if (!count($history_users_bet)) {
+                            $check_user_bet = true;
+                        } elseif ($history_users_bet[0]['user_id'] !== ($_SESSION['user']['id'] ?? 0)) {
+                            $check_user_bet = true;
+                        } ?>
+
+                        <?php if (isset($_SESSION['user']) && ($lot['lot_user_id'] !== $_SESSION['user']['id']) && (strtotime($lot['finish_date']) > time()) && $check_user_bet): ?>
+
+                            <form class="lot-item__form" method="post"
+                                  autocomplete="off">
+                                <?php $field_cost_error = isset($errors['cost']) ? 'form__item--invalid' : ''; ?>
+                                <p class="lot-item__form-item form__item <?= $field_cost_error ?>">
+                                    <label for="cost">Ваша ставка</label>
+                                    <input id="cost" type="text" name="cost"
+                                           placeholder="<?= amount_formatting(min_bid($sum_bet['sum_bet'],
+                                               $lot['bid_step']), 0) ?>">
+                                    <span
+                                        class="form__error"><?= isset($errors['cost']) ? $errors['cost'] : '' ?></span>
+                                </p>
+                                <button type="submit" class="button">Сделать ставку</button>
+                            </form>
+                        <?php endif; ?>
                     </div>
 
                 <?php endif; ?>
 
-                <div class="history">
-                    <h3>История ставок (<span>10</span>)</h3>
-                    <table class="history__list">
-                        <tr class="history__item">
-                            <td class="history__name">Иван</td>
-                            <td class="history__price">10 999 р</td>
-                            <td class="history__time">5 минут назад</td>
-                        </tr>
-                        <tr class="history__item">
-                            <td class="history__name">Константин</td>
-                            <td class="history__price">10 999 р</td>
-                            <td class="history__time">20 минут назад</td>
-                        </tr>
-                        <tr class="history__item">
-                            <td class="history__name">Евгений</td>
-                            <td class="history__price">10 999 р</td>
-                            <td class="history__time">Час назад</td>
-                        </tr>
-                        <tr class="history__item">
-                            <td class="history__name">Игорь</td>
-                            <td class="history__price">10 999 р</td>
-                            <td class="history__time">19.03.17 в 08:21</td>
-                        </tr>
-                        <tr class="history__item">
-                            <td class="history__name">Енакентий</td>
-                            <td class="history__price">10 999 р</td>
-                            <td class="history__time">19.03.17 в 13:20</td>
-                        </tr>
-                        <tr class="history__item">
-                            <td class="history__name">Семён</td>
-                            <td class="history__price">10 999 р</td>
-                            <td class="history__time">19.03.17 в 12:20</td>
-                        </tr>
-                        <tr class="history__item">
-                            <td class="history__name">Илья</td>
-                            <td class="history__price">10 999 р</td>
-                            <td class="history__time">19.03.17 в 10:20</td>
-                        </tr>
-                        <tr class="history__item">
-                            <td class="history__name">Енакентий</td>
-                            <td class="history__price">10 999 р</td>
-                            <td class="history__time">19.03.17 в 13:20</td>
-                        </tr>
-                        <tr class="history__item">
-                            <td class="history__name">Семён</td>
-                            <td class="history__price">10 999 р</td>
-                            <td class="history__time">19.03.17 в 12:20</td>
-                        </tr>
-                        <tr class="history__item">
-                            <td class="history__name">Илья</td>
-                            <td class="history__price">10 999 р</td>
-                            <td class="history__time">19.03.17 в 10:20</td>
-                        </tr>
-                    </table>
-                </div>
+                <?php if (isset($_SESSION['user'])): ?>
+                    <div class="history">
+                        <h3>История ставок (<span><?= $sum_bet['total_bet'] ?></span>)</h3>
+                        <table class="history__list">
+                            <?php foreach ($history_users_bet as $user_bet): ?>
+                                <tr class="history__item">
+                                    <td class="history__name"><?= esc($user_bet['username']) ?></td>
+                                    <td class="history__price"><?= esc(amount_formatting($user_bet['bid_price'],
+                                            0)) . ' р' ?></td>
+                                    <td class="history__time"><?= esc(get_relative_format($user_bet['bid_date'])) ?></td>
+                                </tr>
+                            <?php endforeach; ?>
+                        </table>
+                    </div>
+                <?php endif; ?>
             </div>
         </div>
     </section>

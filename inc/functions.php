@@ -351,3 +351,128 @@ function get_noun_plural_form (int $number, string $one, string $two, string $ma
             return $many;
     }
 }
+
+/**
+ * Возращает CSS класс статус сделанной ставки елси аукцион по лоту завершился
+ * или ставка выигрыла
+ *
+ * @param string $date_finish дата окончания ставки
+ * @param int $winner_id выигрывший пользователь(его ID)
+ * @return string возращает CSS класс
+ */
+function get_status_user_bet($date_finish, $winner_id)
+{
+    $result = '';
+    if ((strtotime($date_finish) < time()) && ($winner_id === null)) {
+        $result = 'rates__item--end';
+    } elseif ((strtotime($date_finish) > time()) && ($winner_id === $_SESSION['user']['id'])) {
+        $result = 'rates__item--win';
+    }
+    return $result;
+}
+
+/**
+ * Приводит дату размещения ставки в человека читаеммый формат
+ *
+ * @param string $date_pub ключ массива указывающий на дату размещения ставки
+ * @return string возращает отформатированную строку
+ */
+function get_relative_format($date_pub)
+{
+    $date_pub = strtotime($date_pub);
+    $date_now = time();
+    $date_diff = $date_now - $date_pub;
+    if ($date_diff < 3600) {
+        $params = array(
+            'sec' => 60,
+            'singular' => ' минута',
+            'genitive' => ' минуты',
+            'plural' => ' минут'
+        );
+    } elseif ($date_diff >= 3600 && $date_diff <= 86400) {
+        $params = array(
+            'sec' => 3600,
+            'singular' => ' час',
+            'genitive' => ' часа',
+            'plural' => ' часов'
+        );
+    } elseif ($date_diff > 86400 && $date_diff <= 604800) {
+        $params = array(
+            'sec' => 86400,
+            'singular' => ' день',
+            'genitive' => ' дня',
+            'plural' => ' дней'
+        );
+    } elseif ($date_diff > 604800 && $date_diff <= 3024000) {
+        $params = array(
+            'sec' => 604800,
+            'singular' => ' неделя',
+            'genitive' => ' недели',
+            'plural' => ' недель'
+        );
+    } elseif ($date_diff > 3024000) {
+        $params = array(
+            'sec' => 3024000,
+            'singular' => ' месяц',
+            'genitive' => ' месяца',
+            'plural' => ' месяцев'
+        );
+    }
+    $date_create = floor($date_diff / $params['sec']);
+    $result = $date_create . get_noun_plural_form($date_create, $params['singular'], $params['genitive'],
+            $params['plural']) . ' назад';
+    return $result;
+}
+
+
+/**
+ * Форматирует отображение цены в зависимости от суммы, а также от в случае надобности при передаче вторым
+ * параметром будет добавлен знак Рубля
+ *
+ * @param int $bet Цена которую надо отформатировать
+ * @param int $need_sign Знак Рубля после цены, если нет необходимости добавить то нужно передать в качестве аргумента 0
+ * @return float|string возвращается отформатированная цена
+ */
+function amount_formatting($bet, $need_sign = 1)
+{
+    $bet = ceil($bet);
+    $currency_sign = '<b class="rub">р</b>';
+    $result = '';
+
+    if ($bet > 0 && $bet < 1000) {
+        $result = $bet;
+    }
+    if ($bet >= 1000) {
+        $result = number_format($bet, 0, '', ' ');
+    }
+
+    if ($need_sign === 1) {
+        $result .= $currency_sign;
+    } elseif ($need_sign !== 1) {
+        $result;
+    }
+
+    return $result;
+}
+
+/**
+ * Проверят сумму ставки которую вводит участник аукциона.
+ * В случае если ставка не целое число или ставка меньше текущей цены вернёт текст ошибки
+ *
+ * @param string $check_bet ключ массива указывающий на текущую ставку
+ * @param int $min_bet сумма текущей ставки введённой пользователем
+ * @return bool|string вернёт текст в случае ошибки
+ */
+function check_sum_bet($check_bet, $min_bet)
+{
+    $result = false;
+    $post_data = $_POST[$check_bet];
+
+    if ((!is_numeric($post_data) || (strpos($post_data, '.') !== false))) {
+        $result = 'Введите целое число';
+    } elseif ($_POST[$check_bet] < $min_bet) {
+        $result = 'Ставка должна большье текущей цены с учётом размера мин. ставки';
+    }
+
+    return $result;
+}
