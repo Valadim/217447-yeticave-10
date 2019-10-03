@@ -5,7 +5,7 @@ require_once('inc/init.php');
 if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     $search = $_GET['search'] ?? '';
     $search = trim($search);
-
+    $search_query = $search;
 
     if (isset($search)) {
 
@@ -38,7 +38,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
 
         if (mysqli_num_rows($result) === 0) {
 
-            $search = 'Ничего не найдено по вашему запросу';
+            $search = 'Ничего не найдено по вашему запросу: ' . $search;
         }
 
         $page_content = include_template('search_tpl.php', [
@@ -50,7 +50,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
             'pages' => $pages,
             'cur_page' => $cur_page,
             'pages_count' => $pages_count,
-            'search_query' => $search
+            'search_query' => $search_query
         ]);
 
 
@@ -71,7 +71,7 @@ $layout_content = include_template('layout.php', [
     'navigation' => $navigation,
     'categories' => $categories,
     'title' => 'Результаты поиска',
-    'search_query' => $search
+    'search_query' => $search_query
 ]);
 
 print($layout_content);
