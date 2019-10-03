@@ -6,6 +6,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     $search = $_GET['search'] ?? '';
     $search = trim($search);
 
+
     if (isset($search)) {
 
         $page_items = 9;
@@ -48,7 +49,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
             'items_count' => $items_count,
             'pages' => $pages,
             'cur_page' => $cur_page,
-            'pages_count' => $pages_count
+            'pages_count' => $pages_count,
+            'search_query' => $search
         ]);
 
 
@@ -68,7 +70,8 @@ $layout_content = include_template('layout.php', [
     'content' => $page_content,
     'navigation' => $navigation,
     'categories' => $categories,
-    'title' => 'Результаты поиска'
+    'title' => 'Результаты поиска',
+    'search_query' => $search
 ]);
 
 print($layout_content);
