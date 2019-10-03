@@ -17,7 +17,7 @@ if (!$con) {
         . 'JOIN category ON lot.category_id = category.id '
         . 'WHERE lot.finish_date > NOW() AND lot.winner_id IS NULL '
         . 'GROUP BY lot.id '
-        . 'ORDER BY lot.date DESC';
+        . 'ORDER BY lot.date DESC LIMIT 9';
     $result_lot = mysqli_query($con, $sql_lot);
 
     if ($result_category && $result_lot) {

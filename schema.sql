@@ -34,6 +34,7 @@ CREATE TABLE lot (
   winner_id INT,
   category_id INT NOT NULL,
   is_active TINYINT NOT NULL,
+  FULLTEXT INDEX search (lot_title, lot_description),
 
   FOREIGN KEY (user_id)  REFERENCES users (id) ON UPDATE CASCADE ON DELETE RESTRICT,
   FOREIGN KEY (category_id)  REFERENCES category (id) ON UPDATE CASCADE ON DELETE RESTRICT
@@ -49,3 +50,4 @@ CREATE TABLE bid (
   FOREIGN KEY (user_id)  REFERENCES users (id) ON UPDATE CASCADE ON DELETE RESTRICT,
   FOREIGN KEY (lot_id)  REFERENCES lot (id) ON UPDATE CASCADE ON DELETE RESTRICT
 );
+
