@@ -423,3 +423,56 @@ function get_relative_format($date_pub)
             $params['plural']) . ' назад';
     return $result;
 }
+
+
+/**
+ * Форматирует отображение цены в зависимости от суммы, а также от в случае надобности при передаче вторым
+ * параметром будет добавлен знак Рубля
+ *
+ * @param int $bet Цена которую надо отформатировать
+ * @param int $need_sign Знак Рубля после цены, если нет необходимости добавить то нужно передать в качестве аргумента 0
+ * @return float|string возвращается отформатированная цена
+ */
+function amount_formatting($bet, $need_sign = 1)
+{
+    $bet = ceil($bet);
+    $currency_sign = '<b class="rub">р</b>';
+    $result = '';
+
+    if ($bet > 0 && $bet < 1000) {
+        $result = $bet;
+    }
+    if ($bet >= 1000) {
+        $result = number_format($bet, 0, '', ' ');
+    }
+
+    if ($need_sign === 1) {
+        $result .= $currency_sign;
+    } elseif ($need_sign !== 1) {
+        $result;
+    }
+
+    return $result;
+}
+
+/**
+ * Проверят сумму ставки которую вводит участник аукциона.
+ * В случае если ставка не целое число или ставка меньше текущей цены вернёт текст ошибки
+ *
+ * @param string $check_bet ключ массива указывающий на текущую ставку
+ * @param int $min_bet сумма текущей ставки введённой пользователем
+ * @return bool|string вернёт текст в случае ошибки
+ */
+function check_sum_bet($check_bet, $min_bet)
+{
+    $result = false;
+    $post_data = $_POST[$check_bet];
+
+    if ((!is_numeric($post_data) || (strpos($post_data, '.') !== false))) {
+        $result = 'Введите целое число';
+    } elseif ($_POST[$check_bet] < $min_bet) {
+        $result = 'Ставка должна большье текущей цены с учётом размера мин. ставки';
+    }
+
+    return $result;
+}
