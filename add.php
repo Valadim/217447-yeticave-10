@@ -1,5 +1,4 @@
 <?php
-require_once('inc/functions.php');
 require_once('inc/init.php');
 
 if (empty($_SESSION)) {

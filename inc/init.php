@@ -1,4 +1,5 @@
 <?php
+require_once('inc/functions.php');
 
 ini_set('error_reporting', E_ALL);
 ini_set('display_errors', 1);
@@ -26,7 +27,7 @@ mysqli_set_charset($con, "utf8");
 $is_auth = rand(0, 1);
 $user_name = "Вадим";
 
-$sql_category = 'SELECT `id`, `name` FROM category';
+$sql_category = 'SELECT `id`, `class`, `name` FROM category';
 $categories = get_db_assoc($con, $sql_category);
 
 $navigation = include_template('main_nav.php', ['categories' => $categories]);

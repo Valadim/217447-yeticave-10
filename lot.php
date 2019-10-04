@@ -1,5 +1,4 @@
 <?php
-require_once('inc/functions.php');
 require_once('inc/init.php');
 
 $sql_id = "SELECT id, finish_date FROM lot WHERE id = {$_GET['id']} AND finish_date > NOW()";

@@ -103,9 +103,6 @@ function get_db_assoc($link, $sql) {
 
     if ($result) {
         return mysqli_fetch_all($result, MYSQLI_ASSOC);
-    } else {
-        $error = mysqli_error($link);
-        return include_template('error.php', ['error' => $error]);
     }
 }
 

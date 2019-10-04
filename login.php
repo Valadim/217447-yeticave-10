@@ -1,6 +1,5 @@
 <?php
 
-require_once('inc/functions.php');
 require_once('inc/init.php');
 
 
@@ -10,7 +9,7 @@ if (!empty($_SESSION)) {
     $page_content = include_template('error.php', [
         'navigation' => $navigation,
         'error' => 'Вы уже зарегистрированны на сайте',
-        'error_text' => 'Повторно зарегистрироваться не получиться'
+        'error_text' => 'Повторно зарегистрироваться не получится'
     ]);
 
     $layout_content = include_template('layout.php', [
@@ -23,9 +22,7 @@ if (!empty($_SESSION)) {
     exit();
 }
 
-
 $errors = [];
-
 
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     $form = $_POST;
@@ -47,24 +44,21 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     if (!count($errors) and $user) {
         if (password_verify($form['password'], $user['password'])) {
             $_SESSION['user'] = $user;
-        }
-        else {
+        } else {
             $errors['password'] = 'Неверный пароль';
         }
-    }
-    else {
+    } else {
         $errors['email'] = 'Такой пользователь не найден';
     }
 
     if (count($errors)) {
-        $page_content = include_template('login_tpl.php', [ 'navigation' => $navigation, 'errors' => $errors]);
-    }
-    else {
+        $page_content = include_template('login_tpl.php', ['navigation' => $navigation, 'errors' => $errors]);
+    } else {
         header("Location: /index.php");
         exit();
     }
-}
-else {
+
+} else {
     $page_content = include_template('login_tpl.php', [
         'navigation' => $navigation,
         'errors' => $errors
