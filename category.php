@@ -1,12 +1,13 @@
 <?php
+
 require_once('inc/init.php');
 
 if ($_SERVER['REQUEST_METHOD'] === 'GET') {
-    $search = $_GET['search'] ?? '';
-    $search = trim($search);
-    $search_query = $search;
+    $category = $_GET['category'] ?? '';
+    $category = trim($category);
+    $category_query = $category;
 
-    if (isset($search)) {
+    if (isset($category)) {
 
         $page_items = 9;
         $cur_page = $_GET['page'] ?? $_GET['page'] = 1;
@@ -14,7 +15,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
         $sql = "SELECT COUNT(l.id) AS cnt FROM lot l
                 JOIN category c ON l.category_id = c.id
                 WHERE MATCH(l.name, l.description) AGAINST(?) AND finish_date > NOW()";
-        $stmt = db_get_prepare_stmt($con, $sql, [$search]);
+        $stmt = db_get_prepare_stmt($con, $sql, [$category]);
         mysqli_stmt_execute($stmt);
         $result = mysqli_stmt_get_result($stmt);
 
@@ -30,26 +31,26 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
                 AND l.finish_date > NOW() GROUP BY l.id
                 ORDER BY l.date DESC LIMIT {$page_items} OFFSET {$offset}";
 
-        $stmt = db_get_prepare_stmt($con, $sql, [$search]);
+        $stmt = db_get_prepare_stmt($con, $sql, [$category]);
         mysqli_stmt_execute($stmt);
         $result = mysqli_stmt_get_result($stmt);
         $lots = mysqli_fetch_all($result, MYSQLI_ASSOC);
 
         if (mysqli_num_rows($result) === 0) {
 
-            $search = 'Ничего не найдено по вашему запросу: ' . $search;
+            $category = 'Ничего не найдено по вашему запросу: ' . $category;
         }
 
         $page_content = include_template('search_tpl.php', [
             'categories' => $categories,
             'navigation' => $navigation,
             'lots' => $lots,
-            'search' => $search,
+            'search' => $category,
             'items_count' => $items_count,
             'pages' => $pages,
             'cur_page' => $cur_page,
             'pages_count' => $pages_count,
-            'search_query' => $search_query
+            'category_query' => $category_query
         ]);
 
 
@@ -70,7 +71,7 @@ $layout_content = include_template('layout.php', [
     'navigation' => $navigation,
     'categories' => $categories,
     'title' => 'Результаты поиска',
-    'search_query' => $search_query
+    'category_query' => $category_query
 ]);
 
 print($layout_content);
