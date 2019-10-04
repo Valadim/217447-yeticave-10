@@ -5,7 +5,7 @@
         <div class="lot-item__content">
             <div class="lot-item__left">
                 <div class="lot-item__image">
-                    <img src="<?= esc('uploads/' . $lot['img_path']) ?>" width="730" height="548" alt="Сноуборд">
+                    <img src="<?= 'uploads/' . $lot["img_path"] ?>" width="730" height="548" alt="Сноуборд">
                 </div>
                 <p class="lot-item__category">Категория: <span><?= esc($lot['category_name']) ?></span></p>
                 <p class="lot-item__description"><?= esc($lot['description']) ?></p>

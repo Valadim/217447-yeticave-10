@@ -9,7 +9,7 @@
                 <?php foreach ($lots as $lot): ?>
                     <li class="lots__item lot">
                         <div class="lot__image">
-                            <img src="../uploads/<?= esc($lot['img_path']) ?>"
+                            <img src="<?= 'uploads/' . $lot["img_path"] ?>"
                                  width="350"
                                  height="260"
                                  alt="Фото: <?= esc($lot['name']) ?>">

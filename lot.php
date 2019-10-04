@@ -2,11 +2,32 @@
 require_once('inc/functions.php');
 require_once('inc/init.php');
 
-if (!isset($_GET['id']) && !is_numeric($_GET['id']) && !$_GET['id'] > 0) {
+$sql_id = "SELECT id, finish_date FROM lot WHERE id = {$_GET['id']} AND finish_date > NOW()";
+$result_id = mysqli_query($con, $sql_id);
+if ($result_id) {
+    $get_lot_id = mysqli_fetch_assoc($result_id);
+} else {
+    $error = mysqli_error($con);
+    $page_content = include_template('error.php', ['error' => $error]);
+}
+
+if (!isset($_GET['id']) || !is_numeric($_GET['id']) || $_GET['id'] != $get_lot_id['id']) {
     http_response_code(404);
-    $content = include_template('404.php',
-        ['error' => 'Ошибка 404: Страница не найдена']);
-    print($content);
+    $page_content = include_template('404.php', [
+        'navigation' => $navigation,
+        'categories' => $categories,
+        'error' => 'Ошибка 404: Страница не найдена'
+    ]);
+
+    $layout_content = include_template('layout.php', [
+        'content' => $page_content,
+        'navigation' => $navigation,
+        'title' => 'Ошибка 404: Страница не найдена',
+        'user_name' => $user_name,
+        'is_auth' => $is_auth
+    ]);
+
+    print($layout_content);
     die();
 }
 $result = '';
@@ -129,6 +150,14 @@ if ($result_category && $result_lot) {
             'history_users_bet' => $history_users_bet
         ]);
     }
+
+//    if (!mysqli_num_rows($result)) {
+//        http_response_code(404);
+//        $page_content = include_template('404.php', [
+//            'navigation' => $navigation,
+//            'categories' => $categories
+//        ]);
+//    }
 
 } else {
     $error = mysqli_error($con);
