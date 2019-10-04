@@ -1,58 +1,5 @@
 <main>
     <?= $navigation ?>
-    <div class="container">
-        <section class="lots">
-            <?php if ($lots): ?>
-                <h2>Все лоты в категории <span>«<?= $category_name ?>»</span></h2>
-                <ul class="lots__list">
-                    <?php foreach ($lots as $lot) : ?>
-                        <li class="lots__item lot">
-                            <div class="lot__image">
-                                <img src="<?= esc($lot['url']) ?>" width="350" height="260" alt="<?= esc($lot['name']) ?>">
-                            </div>
-                            <div class="lot__info">
-                                <span class="lot__category"><?= esc($lot['category']) ?></span>
-                                <h3 class="lot__title"><a class="text-link" href="lot.php?id=<?= $lot['id'] ?>"><?= esc($lot['name']) ?></a></h3>
-                                <div class="lot__state">
-                                    <div class="lot__rate">
-                                        <span class="lot__amount">Стартовая цена</span>
-                                        <span class="lot__cost"><?= formatPrice(esc($lot['price'])) ?></span>
-                                    </div>
-                                    <?php $expiration = getTimeUntil(esc($lot['expiration'])); ?>
-                                    <div class="lot__timer timer <?= $expiration['hours'] === '00' ? 'timer--finishing' : '' ?>">
-                                        <?= $expiration['hours'] . ':' . $expiration['minutes'] ?>
-                                    </div>
-                                </div>
-                            </div>
-                        </li>
-                    <?php endforeach; ?>
-                </ul>
-            <?php else: ?>
-                <h2>Активные лоты в категории <span>«<?= $category_name ?>»</span> не найдены.</h2>
-            <?php endif; ?>
-        </section>
-        <?php if ($pages_count > 1): ?>
-            <ul class="pagination-list">
-                <li class="pagination-item pagination-item-prev">
-                    <a href="category.php?category=<?= $category ?>&page=<?= ($cur_page > 1) ? $cur_page - 1 : 1 ?>">Назад</a>
-                </li>
-                <?php foreach ($pages as $page): ?>
-                    <li class="pagination-item <?= ((int)$page === $cur_page) ? 'pagination-item-active' : '' ?>">
-                        <a href="category.php?category=<?= $category ?>&page=<?= $page ?>"><?= $page ?></a>
-                    </li>
-                <?php endforeach; ?>
-                <li class="pagination-item pagination-item-next">
-                    <a href="category.php?category=<?= $category ?>&page=<?= ($cur_page < count($pages)) ? $cur_page + 1 : $cur_page ?>">Вперед</a>
-                </li>
-            </ul>
-        <?php endif; ?>
-    </div>
-</main>
-
-
-
-<main>
-    <?= $navigation ?>
 
     <div class="container">
         <section class="lots">

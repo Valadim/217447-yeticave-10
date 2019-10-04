@@ -24,6 +24,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
         $offset = ($cur_page - 1) * $page_items;
         $pages = range(1, $pages_count);
 
+
         $sql = "SELECT MAX(b.price) AS max_bid, COUNT(b.price) AS bid_count, l.id,
                 l.date, l.name, l.img_path, l.start_price, c.name AS category_name, l.finish_date
                 FROM lot l JOIN category c ON l.category_id = c.id
@@ -38,14 +39,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
 
         if (mysqli_num_rows($result) === 0) {
 
-            $category = 'Ничего не найдено по вашему запросу: ' . $category;
+            $category = 'Товары из категории: ' . $category;
         }
 
-        $page_content = include_template('search_tpl.php', [
+        $page_content = include_template('category_tpl.php', [
             'categories' => $categories,
             'navigation' => $navigation,
             'lots' => $lots,
-            'search' => $category,
+            'category' => $category,
             'items_count' => $items_count,
             'pages' => $pages,
             'cur_page' => $cur_page,
@@ -55,13 +56,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
 
 
     } else {
-        $page_content = include_template('search_tpl.php', [
+        $page_content = include_template('category_tpl.php', [
             'categories' => $categories,
         ]);
     }
 
 } else {
-    $page_content = include_template('search_tpl.php', [
+    $page_content = include_template('category_tpl.php', [
         'categories' => $categories
     ]);
 }
