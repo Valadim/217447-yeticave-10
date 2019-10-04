@@ -9,7 +9,7 @@ if (!$con) {
     $page_content = include_template('error.php', ['error' => $error]);
 } else {
 
-    $sql_category = 'SELECT `class`, `name` FROM category';
+    $sql_category = 'SELECT `id`, `class`, `name` FROM category';
     $result_category = mysqli_query($con, $sql_category);
 
     $sql_lot = 'SELECT lot.id, lot.name, lot.start_price, lot.img_path, lot.finish_date, category.name AS category_name FROM lot '

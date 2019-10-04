@@ -60,7 +60,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
             $offset = ($cur_page - 1) * $page_items;
             $pages = range(1, $pages_count);
 
-            var_dump($items_count);
 
 
         } else {
@@ -89,6 +88,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
                 ORDER BY l.date DESC LIMIT {$page_items} OFFSET {$offset}";
 
         $stmt = db_get_prepare_stmt($con, $sql, [$category]);
+
+        var_dump([$category]);
         mysqli_stmt_execute($stmt);
         $result = mysqli_stmt_get_result($stmt);
         $lots = mysqli_fetch_all($result, MYSQLI_ASSOC);
