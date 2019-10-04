@@ -9,10 +9,10 @@
 </head>
 <body>
 <h1>Поздравляем с победой</h1>
-<p>Здравствуйте, <?= htmlspecialchars($lot_win['user_name']) ?></p>
-<p>Ваша ставка для лота <a href="http://601235-yeticave-10/lot.php?id=<?= htmlspecialchars($lot_win['lot_win_id']) ?>">
-        <?= htmlspecialchars($lot_win['lot_title']) ?></a> победила.</p>
-<p>Перейдите по ссылке <a href="http://601235-yeticave-10/my-bets.php">мои ставки</a>,
+<p>Здравствуйте, <?= htmlspecialchars(htmlspecialchars($lot_win['username'])) ?></p>
+<p>Ваша ставка для лота <a href="https://github.com/Valadim/217447-yeticave-10/lot.php?id=<?= htmlspecialchars($lot_win['lot_win_id']) ?>">
+        <?= htmlspecialchars($lot_win['name']) ?></a> победила.</p>
+<p>Перейдите по ссылке <a href="https://github.com/Valadim/217447-yeticave-10/blob/master/bets.php">мои ставки</a>,
     чтобы связаться с автором объявления</p>
 <small>Интернет Аукцион "YetiCave"</small>
 
