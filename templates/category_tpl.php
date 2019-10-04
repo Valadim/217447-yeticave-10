@@ -4,7 +4,7 @@
     <div class="container">
         <section class="lots">
             <?php $category = !empty($category) ? $category : '' ?>
-            <h2>Все лоты в категории <span>«<?= $category_name ?>»</span></h2>
+            <h2>Все лоты в категории <span>«<?= $cat['name'] ?>»</span></h2>
             <ul class="lots__list">
                 <?php foreach ($lots as $lot): ?>
                     <li class="lots__item lot">
