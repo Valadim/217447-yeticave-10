@@ -73,8 +73,8 @@
                             <?php foreach ($history_users_bet as $user_bet): ?>
                                 <tr class="history__item">
                                     <td class="history__name"><?= esc($user_bet['username']) ?></td>
-                                    <td class="history__price"><?= esc(amount_formatting($user_bet['bid_price'],
-                                            0)) . ' р' ?></td>
+                                    <td class="history__price"><?= amount_formatting($user_bet['bid_price'],
+                                            0) . ' р' ?></td>
                                     <td class="history__time"><?= esc(get_relative_format($user_bet['bid_date'])) ?></td>
                                 </tr>
                             <?php endforeach; ?>

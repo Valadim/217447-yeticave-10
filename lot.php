@@ -151,14 +151,6 @@ if ($result_category && $result_lot) {
         ]);
     }
 
-//    if (!mysqli_num_rows($result)) {
-//        http_response_code(404);
-//        $page_content = include_template('404.php', [
-//            'navigation' => $navigation,
-//            'categories' => $categories
-//        ]);
-//    }
-
 } else {
     $error = mysqli_error($con);
     $page_content = include_template('error.php', ['error' => $error]);

@@ -5,7 +5,6 @@ require_once('inc/init.php');
 require_once('getwinner.php');
 
 
-
 if (!$con) {
     $error = mysqli_connect_error();
     $page_content = include_template('error.php', ['error' => $error]);
@@ -49,7 +48,8 @@ $layout_content = include_template('layout.php', [
     'is_auth' => $is_auth,
     'main_class' => 'container',
     'error' => $page_error,
-    'navigation' => $navigation
+    'navigation' => $navigation,
+    'is_main_page' => 1
 ]);
 
 print($layout_content);

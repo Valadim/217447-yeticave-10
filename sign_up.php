@@ -47,31 +47,49 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     if (mysqli_num_rows($res) > 0) {
         $errors['email'] = 'Пользователь с этим email уже зарегистрирован';
     }
+
     $errors = array_filter($errors);
 
-    //массив отфильтровываем, чтобы удалить от туда пустые значения и оставить только сообщения об ошибках
-    $errors = array_filter($errors);
+    if (empty($errors)) {
+        $sql = 'INSERT INTO users (email, password, username, contacts) VALUES (?, ?, ?, ?)';
 
-    $sql = 'INSERT INTO users (email, password, username, contacts) VALUES (?, ?, ?, ?)';
+        $user['password'] = password_hash($user['password'], PASSWORD_DEFAULT);
 
-    $user['password'] = password_hash($user['password'], PASSWORD_DEFAULT);
+        $stmt = db_get_prepare_stmt($con, $sql, [
+            $user['email'],
+            $user['password'],
+            $user['name'],
+            $user['message']
+        ]);
+        $res = mysqli_stmt_execute($stmt);
 
-    $stmt = db_get_prepare_stmt($con, $sql, [
-        $user['email'],
-        $user['password'],
-        $user['name'],
-        $user['message']
-    ]);
-    $res = mysqli_stmt_execute($stmt);
-
-
-
-    if ($res) {
-        $lot_id = mysqli_insert_id($con);
-        header("Location: login.php");
-    } else {
-        $page_content = include_template('error.php', ['error' => mysqli_error($con)]);
+        if ($res) {
+            $lot_id = mysqli_insert_id($con);
+            header("Location: login.php");
+        } else {
+            $page_content = include_template('error.php', ['error' => mysqli_error($con)]);
+        }
     }
+
+//    $sql = 'INSERT INTO users (email, password, username, contacts) VALUES (?, ?, ?, ?)';
+//
+//    $user['password'] = password_hash($user['password'], PASSWORD_DEFAULT);
+//
+//    $stmt = db_get_prepare_stmt($con, $sql, [
+//        $user['email'],
+//        $user['password'],
+//        $user['name'],
+//        $user['message']
+//    ]);
+//    $res = mysqli_stmt_execute($stmt);
+
+
+//    if ($res) {
+//        $lot_id = mysqli_insert_id($con);
+//        header("Location: login.php");
+//    } else {
+//        $page_content = include_template('error.php', ['error' => mysqli_error($con)]);
+//    }
 
 }
 

@@ -37,7 +37,7 @@ $layout_content = include_template('layout.php', [
     'content' => $page_content,
     'navigation' => $navigation,
     'categories' => $categories,
-    'title' => 'Мои ставки',
+    'title' => 'Мои ставки'
 ]);
 
 print($layout_content);

@@ -178,7 +178,8 @@ $layout_content = include_template('layout.php', [
     'navigation' => $navigation,
     'title' => 'Добавление лота',
     'user_name' => $user_name,
-    'is_auth' => $is_auth
+    'is_auth' => $is_auth,
+    'is_main_page' => 0
 ]);
 
 print($layout_content);

@@ -7,10 +7,12 @@ $sql = 'SELECT * FROM lot l WHERE finish_date < NOW()
 AND winner_id IS NULL';
 $result = mysqli_query($con, $sql);
 
+$lots_win = [];
+
 if (!empty($result)) {
     $lots_finished = mysqli_fetch_all($result, MYSQLI_ASSOC);
 
-    var_dump($lots_finished);
+//    var_dump($lots_finished);
 
     $winners_id = [];
     foreach ($lots_finished as $lots_finish) {
@@ -25,7 +27,7 @@ if (!empty($result)) {
         }
     }
 
-    var_dump($winners_id);
+    //   var_dump($winners_id);
 
     $winners_id = array_filter($winners_id);
 

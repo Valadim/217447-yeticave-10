@@ -36,7 +36,7 @@
                         <?php endif; ?>
                     </td>
                     <td class="rates__price">
-                        <?= user_bet(esc($my_bet['max_my_bet'])) ?>
+                        <?= user_bet($my_bet['max_my_bet']) ?>
                     </td>
                     <td class="rates__time">
                         <?= get_relative_format($my_bet['bid_date']) ?>
