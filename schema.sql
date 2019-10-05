@@ -1,53 +1,61 @@
-DROP DATABASE `yeticave`;
-
-CREATE DATABASE yeticave
-  DEFAULT CHARACTER SET utf8
-  DEFAULT COLLATE utf8_general_ci;
+CREATE DATABASE IF NOT EXISTS yeticave
+CHARACTER SET utf8;
 
 USE yeticave;
 
-CREATE TABLE category (
-  id INT NOT NULL PRIMARY KEY AUTO_INCREMENT,
-  name VARCHAR(255) NOT NULL UNIQUE,
-  class VARCHAR(255)
-);
+DROP TABLE IF EXISTS `bids`;
+DROP TABLE IF EXISTS `lots`;
+DROP TABLE IF EXISTS `users`;
+DROP TABLE IF EXISTS `categories`;
 
-CREATE TABLE users (
-  id INT NOT NULL PRIMARY KEY AUTO_INCREMENT,
-  email VARCHAR(255) NOT NULL UNIQUE,
-  username  VARCHAR(255) NOT NULL,
-  password VARCHAR(255) NOT NULL,
-  contacts TEXT,
-  create_time TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-);
+CREATE TABLE `categories` (
+    id int unsigned NOT NULL AUTO_INCREMENT PRIMARY KEY,
+    `name` varchar(255) NOT NULL UNIQUE KEY,
+    `code` varchar(255) NOT NULL UNIQUE KEY
+)  CHARSET=utf8;
 
-CREATE TABLE lot (
-  id INT NOT NULL PRIMARY KEY AUTO_INCREMENT,
-  date TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-  name VARCHAR(255) NOT NULL,
-  description TEXT NOT NULL,
-  img_path VARCHAR(255) NOT NULL,
-  start_price INT NOT NULL,
-  finish_date DATETIME NOT NULL,
-  bid_step INT NOT NULL,
-  user_id INT NOT NULL,
-  winner_id INT,
-  category_id INT NOT NULL,
-  is_active TINYINT NOT NULL,
-  FULLTEXT INDEX search (lot_title, lot_description),
+CREATE TABLE `users` (
+    `id` int unsigned NOT NULL AUTO_INCREMENT PRIMARY KEY,
+    `creation_time` datetime NOT NULL DEFAULT NOW(),
+    `email` varchar(255) NOT NULL UNIQUE,
+    `name` varchar(255) NOT NULL,
+    `password` varchar(255) NOT NULL,
+    `avatar_path` varchar(255),
+    `contact` TEXT
+)  CHARSET=utf8;
 
-  FOREIGN KEY (user_id)  REFERENCES users (id) ON UPDATE CASCADE ON DELETE RESTRICT,
-  FOREIGN KEY (category_id)  REFERENCES category (id) ON UPDATE CASCADE ON DELETE RESTRICT
-);
+CREATE TABLE `lots` (
+  `id` int unsigned NOT NULL AUTO_INCREMENT PRIMARY KEY,
+  `creation_time` datetime NOT NULL DEFAULT NOW(),
+  `title` varchar(255) NOT NULL,
+  `description` text,
+  `image_path` varchar(255) NOT NULL,
+  `price` int unsigned NOT NULL,
+  `expire_date` datetime NOT NULL,
+  `bid_step` int unsigned NOT NULL,
+  `user_id` int unsigned NOT NULL,
+  `winner_id` int unsigned DEFAULT NULL,
+  `category_id` int unsigned NOT NULL,
+  KEY `idx_expire_date` (`expire_date`),
+  KEY `idx_fk_lots_user` (`user_id`),
+  KEY `idx_fk_lots_winner` (`winner_id`),
+  KEY `idx_fk_lots_cat` (`category_id`),
+  FULLTEXT KEY `idx_lots_title_descr` (`title`, `description`),
+  CONSTRAINT `fk_lots_user` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
+  CONSTRAINT `fk_lots_winner` FOREIGN KEY (`winner_id`) REFERENCES `users` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
+  CONSTRAINT `fk_lots_cat` FOREIGN KEY (`category_id`) REFERENCES `categories` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
+) CHARSET=utf8;
 
-CREATE TABLE bid (
-  id INT NOT NULL PRIMARY KEY AUTO_INCREMENT,
-  date TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-  price INT NOT NULL,
-  user_id INT NOT NULL,
-  lot_id INT NOT NULL,
+CREATE TABLE `bids` (
+  `id` int unsigned NOT NULL AUTO_INCREMENT PRIMARY KEY,
+  `creation_time` datetime NOT NULL DEFAULT NOW(),
+  `amount` int unsigned NOT NULL,
+  `user_id` int unsigned NOT NULL,
+  `lot_id` int unsigned NOT NULL,
+  KEY `idx_fk_bids_user` (`user_id`),
+  KEY `idx_fk_bids_lot` (`lot_id`),
+  CONSTRAINT `fk_bids_user` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`),
+  CONSTRAINT `fk_bids_lot` FOREIGN KEY (`lot_id`) REFERENCES `lots` (`id`)
+) CHARSET=utf8;
 
-  FOREIGN KEY (user_id)  REFERENCES users (id) ON UPDATE CASCADE ON DELETE RESTRICT,
-  FOREIGN KEY (lot_id)  REFERENCES lot (id) ON UPDATE CASCADE ON DELETE RESTRICT
-);
 

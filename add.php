@@ -1,187 +1,78 @@
 <?php
-require_once('inc/functions.php');
-require_once('inc/init.php');
+require_once __DIR__ . '/starter.php';
 
-if (empty($_SESSION)) {
+if (!$sessUser) {
     http_response_code(403);
-
-    $page_content = include_template('error.php', [
-        'navigation' => $navigation,
-        'error' => '403 Доступ запрещен',
-        'error_text' => 'Авторизуйтесь для добавления лота'
-    ]);
-
-    $layout_content = include_template('layout.php', [
-        'content' => $page_content,
-        'navigation' => $navigation,
-        'title' => 'Ошибка 403. В доступе отказано'
-    ]);
-
-    print($layout_content);
-    exit();
+    showError('Доступ только для зарегистрированных пользователей', '403');
 }
 
-$sql = 'SELECT * FROM category';
-$result = mysqli_query($con, $sql);
-$cats_ids = [];
-
-if ($result) {
-    $cats = mysqli_fetch_all($result, MYSQLI_ASSOC);
-    $cats_ids = array_column($cats, 'id');
-}
 $errors = [];
-$lot = [];
+$formData = [];
 
-//проверяем метод отправки формы
-if ($_SERVER['REQUEST_METHOD'] == 'POST') {
+$dbConnection = dbConnect($config['db']);
+$categories = getCategories($dbConnection);
 
-    //Скопируем POST массив в переменную $lot
-    $lot = $_POST;
 
-    //определяем список полей, которые собираемся валидировать
-    $required = ['name_lot', 'description', 'initial_price', 'step_rate', 'expiration_date', 'category_id'];
+if (($_SERVER['REQUEST_METHOD'] ?? null) === 'POST') {
+    $catIds = array_column($categories, 'id');
+    $fileName = '';
 
-    //Определим функции-помощники для валидации и поля, которые они должны обработать
     $rules = [
-        'category_id' => function () use ($cats_ids) {
-            return validateCategory('category_id', $cats_ids);
-        },
-        'name_lot' => function () {
-            return validateLength('name_lot', 10, 128);
-        },
-        'description' => function () {
-            return validateLength('description', 10, 2000);
-        },
-        'initial_price' => function () {
-            if ((!is_numeric($_POST["initial_price"])) and ($_POST["initial_price"] > 0)) {
-                return "Начальная цена должна быть числом";
-            }
-            return null;
-        },
-        'step_rate' => function () {
-            if ((!is_numeric($_POST["step_rate"])) and ($_POST["step_rate"] > 0)) {
-                return "Шаг ставки должен быть числом";
-            }
-            return null;
-        },
-        'expiration_date' => function () {
-            if (!is_date_valid($_POST['expiration_date'])) {
-                return 'Введите число в формате ГГГГ-ММ-ДД';
-            } else {
-                $date_now = strtotime('now');
-                $date_end = strtotime($_POST['expiration_date']);
-
-                if ($date_end <= $date_now) {
-                    return 'Дата окончания торгов не может быть раньше чем завтра';
-                }
-            }
-            return null;
-        }
+        'category' => $validateCategory,
+        'lot-name' => $validateLotName,
+        'message' => $validateLotComment,
+        'lot-rate' => $validateLotPrice,
+        'lot-step' => $validateBidStep,
+        'lot-date' => $validateLotExpire
     ];
 
-    foreach ($required as $key) {
-
-        if (!empty($_POST[$key])) {
-            $_POST[$key] = trim($_POST[$key]);
-
-            if (empty($_POST[$key])) {
-                $errors[$key] = 'Это поле надо заполнить';
-            } else {
-                $rule = $rules[$key];
-
-                /*Результат работы функций записывается в массив ошибок*/
-                $errors[$key] = $rule();
-            }
-        } else {
-            $errors[$key] = 'Это поле надо заполнить';
-        }
+    $formData = trimItems($_POST);
+    $errors = validateForm($rules, $formData);
+    $imageError = $validateImage($_FILES['lot-img'] ?? []);
+    if ($imageError) {
+        $errors['lot-img'] = $imageError;
     }
 
-    //массив отфильтровываем, чтобы удалить от туда пустые значения и оставить только сообщения об ошибках
-    $errors = array_filter($errors);
-
-//Проверим, был ли загружен файл
-    if (!empty($_FILES['image']['name'])) {
-        $tmp_name = $_FILES['image']['tmp_name'];
-        $file_type = mime_content_type($tmp_name);
-        $file_name = $_FILES['image']['name'];
-
-        //Если тип загруженного файла не является jpeg, то добавляем новую ошибку в список ошибок валидации
-        if ($file_type != "image/jpeg" && $file_type != "image/png") {
-            $errors['file'] = 'Загрузите картинку в формате jpeg или png';
+    if (!$errors) {
+        $lot = [
+            $formData['lot-name'],
+            $fileName,
+            $formData['lot-rate'],
+            $formData['lot-date'],
+            $formData['lot-step'],
+            $sessUser['id'],
+            $formData['category'],
+            $formData['message']
+        ];
+        $lotId = createLot($dbConnection, $lot);
+        dbClose($dbConnection);
+        if (!$lotId) {
+            exit('Не удалось добавить новый лот');
         }
-
-    } //если файл не был загружен, добавляем ошибку
-    else {
-        $errors['file'] = 'Вы не загрузили файл';
+        header('Location: /lot.php?id=' . (string)$lotId);
+        exit;
     }
 
-    //проверяем длину массива с ошибками
-    if (count($errors)) {
-
-        //если были ошибки, то показываем их пользователю вместе с формой
-        $page_content = include_template('add_tpl.php', [
-            'lot' => $lot,
-            'errors' => $errors,
-            'cats' => $cats
-        ]);
-    } else {
-
-        /*создание нового имени файла*/
-        if ($file_type == "image/jpeg") {
-            $filename = uniqid() . '.jpeg';
-        } else {
-            $filename = uniqid() . '.png';
-        }
-
-        $tmp_name = $_FILES['image']['tmp_name'];
-        $file_type = mime_content_type($tmp_name);
-
-        move_uploaded_file($tmp_name, 'uploads/' . $filename);
-        $lot['image'] = $filename;
-
-        $sql = 'INSERT INTO lot (user_id, name, category_id, description, start_price, bid_step, finish_date, img_path ) VALUES (?, ?, ?, ?, ?, ?, ?, ?)';
-
-        $stmt = db_get_prepare_stmt($con, $sql, [
-            $_SESSION['user']["id"],
-            $lot['name_lot'],
-            $lot['category_id'],
-            $lot['description'],
-            $lot['initial_price'],
-            $lot['step_rate'],
-            $lot['expiration_date'],
-            $lot['image']
-        ]);
-        $res = mysqli_stmt_execute($stmt);
-
-
-        if ($res) {
-            $lot_id = mysqli_insert_id($con);
-            header("Location: lot.php?id=" . $lot_id);
-        } else {
-            $content = include_template('error.php', ['error' => mysqli_error($con)]);
-            print_r($lot);
-        }
+    if ($fileName) {
+        unlink($fileName);
     }
 }
 
-$navigation = include_template('main_nav.php', ['categories' => $categories]);
+dbClose($dbConnection);
 
-$add_tpl = include_template('add_tpl.php', [
-    'cats' => $cats,
-    'navigation' => $navigation,
-    'errors' => $errors
-]);
-
-$layout_content = include_template('layout.php', [
-    'content' => $add_tpl,
-    'navigation' => $navigation,
-    'title' => 'Добавление лота',
-    'user_name' => $user_name,
-    'is_auth' => $is_auth
-]);
-
-print($layout_content);
-
-
-
+$navigation = includeTemplate('navigation.php', ['categories' => $categories]);
+$mainContent = includeTemplate(
+    'add-lot.php',
+    ['navigation' => $navigation, 'categories' => $categories, 'errors' => $errors, 'form' => $formData]
+);
+$layoutContent = includeTemplate(
+    'layout.php',
+    [
+        'pageTitle' => 'Добавление лота',
+        'isAuth' => (bool)$sessUser,
+        'userName' => $sessUser['name'] ?? '',
+        'navigation' => $navigation,
+        'mainContent' => $mainContent
+    ]
+);
+print($layoutContent);
