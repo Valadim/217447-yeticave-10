@@ -1,11 +1,19 @@
 <?php
 
+/**Функция проверяет на валидность поле email с помощью стандартной функции filter_var
+ * так же проверяет длину вводимого значения
+ *
+ * @param string $email принимает email
+ * @param string $min минимальное количество знаков
+ * @param string $max максимальное количество знаков
+ * @return string в случае ошибки возвращает текст ошибки
+ */
 function validateEmail($email, $min, $max)
 {
     $result = '';
     $len = mb_strlen($_POST[$email]);
     if ($len < $min || $len > $max) {
-        $result = 'Длинна E-mail должна быть от' . $min . 'до' . $max . 'символов';
+        $result = 'Длинна E-mail должна быть от ' . $min . ' до ' . $max . ' символов';
     }
     if (!filter_var($_POST[$email], FILTER_VALIDATE_EMAIL)) {
         $result = 'Email должен быть корректным';
@@ -14,15 +22,21 @@ function validateEmail($email, $min, $max)
 }
 
 /**
- * функцию, для получения значения поля
+ * функция для получения значения поля
  * @param string $name принимает значение
  * @return string возвращает заполненные поля
  */
-function getPostVal($name) {
+function getPostVal($name)
+{
     return $_POST[$name] ?? "";
 }
 
-function validateFilled($name) {
+/**Проверяет не пустое ли поле
+ * @param string $name принимает значение поля
+ * @return string|null в случае ошибки возвращает текст ошибки или NULL если ошибок нет
+ */
+function validateFilled($name)
+{
     if (empty($_POST[$name])) {
         return "Это поле должно быть заполнено";
     }
@@ -30,7 +44,13 @@ function validateFilled($name) {
     return null;
 }
 
-function validateCategory($name, $allowed_list) {
+/**Проверяет существование категории
+ * @param string $name принимает сравниваемое значение
+ * @param string $allowed_list принимает список для сравнения
+ * @return string|null в случае ошибки возвращает текст ошибки или NULL если ошибок нет
+ */
+function validateCategory($name, $allowed_list)
+{
     $id = $_POST[$name];
 
     if (!in_array($id, $allowed_list)) {
@@ -40,7 +60,15 @@ function validateCategory($name, $allowed_list) {
     return null;
 }
 
-function validateLength($name, $min, $max) {
+/**Проверяет длину вводимого значения
+ *
+ * @param string $name принимает значение
+ * @param string $min минимальное количество знаков
+ * @param string $max максимальное количество знаков
+ * @return string в случае ошибки возвращает текст ошибки
+ */
+function validateLength($name, $min, $max)
+{
     $len = strlen($_POST[$name]);
 
     if ($len < $min or $len > $max) {
@@ -64,7 +92,8 @@ function validateLength($name, $min, $max) {
  *
  * @return bool true при совпадении с форматом 'ГГГГ-ММ-ДД', иначе false
  */
-function is_date_valid(string $date) : bool {
+function is_date_valid(string $date): bool
+{
     $format_to_check = 'Y-m-d';
     $dateTimeObj = date_create_from_format($format_to_check, $date);
     return $dateTimeObj !== false && array_sum(date_get_last_errors()) === 0;
@@ -98,7 +127,8 @@ function validateTimeFormat($date)
  * @param string $sql запрос к базе данных
  * @return array ассоциативный массив из БД или страницу ошибки
  */
-function get_db_assoc($link, $sql) {
+function get_db_assoc($link, $sql)
+{
     $result = mysqli_query($link, $sql);
 
     if ($result) {
@@ -122,7 +152,6 @@ function min_bid($price, $step)
  * @param string $end_date Принимает дату завершения лота
  * @return array возвращает массив с часами и минутами
  */
-
 date_default_timezone_set("Europe/Moscow");
 setlocale(LC_ALL, 'ru_RU');
 
@@ -325,9 +354,9 @@ function show_date($timestamp)
  *
  * @return string Рассчитанная форма множественнго числа
  */
-function get_noun_plural_form (int $number, string $one, string $two, string $many): string
+function get_noun_plural_form(int $number, string $one, string $two, string $many): string
 {
-    $number = (int) $number;
+    $number = (int)$number;
     $mod10 = $number % 10;
     $mod100 = $number % 100;
 
