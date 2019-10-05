@@ -1,10 +1,10 @@
 <?php
 return [
     'db' => [
-        'host' => 'localhost',
-        'user' => 'root',
+        'host' => '',
+        'user' => '',
         'password' => '',
-        'database' => 'yeticave'
+        'database' => ''
     ],
     'lots_per_page' => 9,
     'smtp' => [
