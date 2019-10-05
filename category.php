@@ -31,13 +31,9 @@ if (!isset($_GET['cat_id']) || !is_numeric($_GET['cat_id']) || $_GET['cat_id'] !
     die();
 }
 
-
 if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     $category = $_GET['cat_id'] ?? '';
     $category = trim($category);
-    $category_query = $category;
-
-//    var_dump($get_cat_id);
 
     if (isset($category)) {
 
@@ -52,7 +48,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
 //        mysqli_stmt_execute($stmt);
 //        $result = mysqli_stmt_get_result($stmt);
 
-
         $result = mysqli_query($con, $sql);
         if ($result) {
             $items_count = mysqli_fetch_assoc($result)['cnt'];
@@ -60,25 +55,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
             $offset = ($cur_page - 1) * $page_items;
             $pages = range(1, $pages_count);
 
-
-
         } else {
             $error = mysqli_error($con);
             $page_content = include_template('error.php', ['error' => $error]);
         }
-
-
-
-
-
-
-//        $items_count = mysqli_fetch_assoc($result)['cnt'];
-//        $pages_count = ceil($items_count / $page_items);
-//        $offset = ($cur_page - 1) * $page_items;
-//        $pages = range(1, $pages_count);
-//
-//        var_dump($category);
-
 
         $sql = "SELECT MAX(b.price) AS max_bid, COUNT(b.price) AS bid_count, l.id,
                 l.date, l.name, l.img_path, l.start_price, c.name AS category_name, l.finish_date
@@ -89,7 +69,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
 
         $stmt = db_get_prepare_stmt($con, $sql, [$category]);
 
-        var_dump([$category]);
         mysqli_stmt_execute($stmt);
         $result = mysqli_stmt_get_result($stmt);
         $lots = mysqli_fetch_all($result, MYSQLI_ASSOC);
@@ -108,9 +87,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
             'pages' => $pages,
             'cur_page' => $cur_page,
             'pages_count' => $pages_count,
-            'category_query' => $category_query
+            'category' => $category
         ]);
-
 
     } else {
         $page_content = include_template('category_tpl.php', [
@@ -128,10 +106,7 @@ $layout_content = include_template('layout.php', [
     'content' => $page_content,
     'navigation' => $navigation,
     'categories' => $categories,
-    'title' => 'Результаты поиска',
-    'category_query' => $category_query
+    'title' => 'Результаты поиска'
 ]);
 
 print($layout_content);
-
-

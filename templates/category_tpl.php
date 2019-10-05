@@ -45,15 +45,15 @@
         <?php if ($pages_count > 1): ?>
             <ul class="pagination-list">
                 <li class="pagination-item pagination-item-prev">
-                    <a href="category.php?search=<?= $category ?>&page=<?= ($cur_page > 1) ? $cur_page - 1 : 1 ?>">Назад</a>
+                    <a href="category.php?cat_id=<?= $category ?>&page=<?= ($cur_page > 1) ? $cur_page - 1 : 1 ?>">Назад</a>
                 </li>
                 <?php foreach ($pages as $page): ?>
                     <li class="pagination-item <?= ((int)$page === $cur_page) ? 'pagination-item-active' : '' ?>">
-                        <a href="category.php?search=<?= $category ?>&page=<?= $page ?>"><?= $page ?></a>
+                        <a href="category.php?cat_id=<?= $category ?>&page=<?= $page ?>"><?= $page ?></a>
                     </li>
                 <?php endforeach; ?>
                 <li class="pagination-item pagination-item-next">
-                    <a href="category.php?search=<?= $category ?>&page=<?= ($cur_page < count($pages)) ? $cur_page + 1 : $cur_page ?>">Вперед</a>
+                    <a href="category.php?cat_id=<?= $category ?>&page=<?= ($cur_page < count($pages)) ? $cur_page + 1 : $cur_page ?>">Вперед</a>
                 </li>
             </ul>
         <?php endif; ?>
