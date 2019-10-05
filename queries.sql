@@ -1,87 +1,60 @@
+-- Вставка пользователей
+INSERT INTO `users` (`email`, `name`, `password`)
+VALUES ('tirol@ya.ru', 'Элеанора Тирл', '123456789'),
+('lanister@mail.ru', 'Тайвин Ланистер', '123456789');
 
--- Запросы на добавление пользователей
 
-INSERT INTO `users` (`id`, `email`, `username`, `password`, `contacts`, `create_time`)
-VALUES (NULL, 'sakeyev@mail.ru', 'Вадим', '123456', 'Тут поле для контактов', CURRENT_TIMESTAMP);
+-- Вставка категорий
+INSERT INTO `categories` (`name`, `code`)
+VALUES ('Доски и лыжи', 'boards'),
+('Крепления', 'attachment'),
+('Ботинки', 'boots'),
+('Одежда', 'clothing'),
+('Инструменты', 'tools'),
+('Разное', 'other');
 
-INSERT INTO `users` (`id`, `email`, `username`, `password`, `contacts`, `create_time`)
-VALUES (NULL, 'geralt@mail.ru', 'Геральт из Ривии', '284756', 'Каэр Морхен, строение 5, комната 3', CURRENT_TIMESTAMP);
+-- Вставка объявлений
+INSERT INTO `lots` (`title`, `image_path`, `price`, `expire_date`, `bid_step`, `user_id`, `category_id`)
+VALUES
+('2014 Rossignol District Snowboard', '/img/lot-1.jpg', 10999, '2019-10-30', 100, 1, 1),
+('DC Ply Mens 2016/2017 Snowboard', '/img/lot-2.jpg', 159999, '2019-10-14 23:00', 1000, 1, 1),
+('Крепления Union Contact Pro 2015 года размер L/XL', '/img/lot-3.jpg', 8000, '2019-10-15', 100, 1, 2),
+('Ботинки для сноуборда DC Mutiny Charocal', '/img/lot-4.jpg', 10999, '2019-10-20', 100, 1, 3),
+('Куртка для сноуборда DC Mutiny Charocal', '/img/lot-5.jpg', 7500, '2019-10-01', 100, 1, 4),
+('Маска Oakley Canopy', '/img/lot-6.jpg', 5400, '2019-10-07', 50, 1, 6);
 
-INSERT INTO `users` (`id`, `email`, `username`, `password`, `contacts`, `create_time`)
-VALUES (NULL, 'triss@mail.ru', 'Трисс Меригольд', '386756', 'Новиград, Обрезки, дом 12', CURRENT_TIMESTAMP);
-
-INSERT INTO `users` (`id`, `email`, `username`, `password`, `contacts`, `create_time`)
-VALUES (NULL, 'yennefer@mail.ru', 'Йеннифэр из Венгерберга', '2837456', 'Венгербер, а дальше ищи как хочешь', CURRENT_TIMESTAMP);
-
--- Запросы на добавление категорий
-
-INSERT INTO `category` (`id`, `name`, `class`) VALUES (NULL, 'Доски и лыжи', 'boards');
-
-INSERT INTO `category` (`id`, `name`, `class`) VALUES (NULL, 'Крепления', 'attachment');
-
-INSERT INTO `category` (`id`, `name`, `class`) VALUES (NULL, 'Ботинки', 'boots');
-
-INSERT INTO `category` (`id`, `name`, `class`) VALUES (NULL, 'Одежда', 'clothing');
-
-INSERT INTO `category` (`id`, `name`, `class`) VALUES (NULL, 'Инструменты', 'tools');
-
-INSERT INTO `category` (`id`, `name`, `class`) VALUES (NULL, 'Разное', 'other');
-
--- Запросы на добавление лотов
-
-INSERT INTO `lot` (`id`, `date`, `name`, `description`, `img_path`, `start_price`, `finish_date`, `bid_step`, `user_id`, `winner_id`, `category_id`, `is_active`)
-VALUES (NULL, CURRENT_TIMESTAMP, '2014 Rossignol District Snowboard', 'Описание товара', '../img/lot-1.jpg', 10999, '2019-09-28 12:28:05', 1000, 1, NULL, 1, 1);
-
-INSERT INTO `lot` (`id`, `date`, `name`, `description`, `img_path`, `start_price`, `finish_date`, `bid_step`, `user_id`, `winner_id`, `category_id`, `is_active`)
-VALUES (NULL, CURRENT_TIMESTAMP, 'DC Ply Mens 2016/2017 Snowboard', 'Описание товара', '../img/lot-2.jpg', 15999, '2019-09-12 09:28:05', 1000, '2', NULL, 1, 1);
-
-INSERT INTO `lot` (`id`, `date`, `name`, `description`, `img_path`, `start_price`, `finish_date`, `bid_step`, `user_id`, `winner_id`, `category_id`, `is_active`)
-VALUES (NULL, CURRENT_TIMESTAMP, 'Крепления Union Contact Pro 2015 года размер L/XL', 'Описание товара', '../img/lot-3.jpg', 8000, '2019-10-02 22:35:05', 1000, 3, NULL, 2, 1);
-
-INSERT INTO `lot` (`id`, `date`, `name`, `description`, `img_path`, `start_price`, `finish_date`, `bid_step`, `user_id`, `winner_id`, `category_id`, `is_active`)
-VALUES (NULL, CURRENT_TIMESTAMP, 'Ботинки для сноуборда DC Mutiny Charocal', 'Описание товара', '../img/lot-4.jpg', 10999, '2019-09-29 02:08:05', 1000, 4, NULL, 3, 1);
-
-INSERT INTO `lot` (`id`, `date`, `name`, `description`, `img_path`, `start_price`, `finish_date`, `bid_step`, `user_id`, `winner_id`, `category_id`, `is_active`)
-VALUES (NULL, CURRENT_TIMESTAMP, 'Куртка для сноуборда DC Mutiny Charocal', 'Описание товара', '../img/lot-5.jpg', 10999, '2019-09-14 19:00:00', 1000, 3, NULL, 4, 1);
-
-INSERT INTO `lot` (`id`, `date`, `name`, `description`, `img_path`, `start_price`, `finish_date`, `bid_step`, `user_id`, `winner_id`, `category_id`, `is_active`)
-VALUES (NULL, CURRENT_TIMESTAMP, 'Маска Oakley Canopy', 'Описание товара', '../img/lot-6.jpg', 5500, '2019-10-08 11:36:47', 1000, 1, NULL, 6, 1);
-
--- Запросы на добавление ставки
-
-INSERT INTO `bid` (`id`, `date`, `price`, `user_id`, `lot_id`) VALUES (NULL, CURRENT_TIMESTAMP, 20000, 2, 1);
-
-INSERT INTO `bid` (`id`, `date`, `price`, `user_id`, `lot_id`) VALUES (NULL, CURRENT_TIMESTAMP, 22000, 3, 1);
-
-INSERT INTO `bid` (`id`, `date`, `price`, `user_id`, `lot_id`) VALUES (NULL, CURRENT_TIMESTAMP, 8000, 2, 6);
+-- Вставка ставок
+INSERT INTO `bids` (`amount`, `user_id`, `lot_id`)
+VALUES (11099, 2, 1), (11200, 2, 1);
 
 -- получить все категории
+SELECT * FROM `categories`;
 
-SELECT * FROM `category`;
-
--- получить самые новые, открытые лоты. Каждый лот должен включать название, стартовую цену, ссылку на изображение, цену, название категории;
-
-SELECT lot.name, lot.start_price, lot.img_path, category.name AS category_name, IFNULL(MAX(bid.price), lot.start_price) AS current_price, COUNT(bid.lot_id) AS bid_count FROM lot
-LEFT JOIN category ON lot.category_id = category.id
-LEFT JOIN bid ON lot.id = bid.lot_id
-WHERE lot.finish_date > NOW() AND lot.winner_id IS NULL
-GROUP BY lot.id
-ORDER BY lot.date DESC;
+/*
+получить самые новые, открытые лоты.
+Каждый лот должен включать название, стартовую цену, ссылку на изображение, цену, название категории
+*/
+SELECT l.id, l.title, l.price, l.image_path,
+(SELECT amount FROM bids WHERE lot_id=l.id ORDER BY id DESC LIMIT 1) `sum`,
+c.name
+FROM lots l JOIN categories c ON l.category_id=c.id
+WHERE l.expire_date > NOW()
+ORDER BY l.creation_time DESC, l.id DESC;
 
 -- показать лот по его id. Получите также название категории, к которой принадлежит лот
-
-SELECT lot.*, category.name AS category_name FROM lot
-JOIN category ON lot.category_id = category.id
-WHERE lot.id = 1;
+SET @lot_id=1;
+SELECT l.*, c.name
+FROM lots l JOIN categories c ON l.category_id=c.id
+WHERE l.id=@lot_id;
 
 -- обновить название лота по его идентификатору
+SET @new_title='modified title';
+UPDATE lots
+SET title=@new_title
+WHERE id=@lot_id;
 
-UPDATE lot SET lot.name = '2014 Rossignol District Snowboard редакция 1'
-WHERE lot.id = 1;
-
--- получить список ставок для лота по его идентификатору с сортировкой по дате.
-
-SELECT bid.* FROM lot
-JOIN bid ON lot.id = bid.lot_id
-WHERE lot.id = 1
-ORDER BY bid.date DESC;
+-- получить список ставок для лота по его идентификатору с сортировкой по дате
+SELECT *
+FROM bids
+WHERE lot_id=@lot_id
+ORDER BY creation_time DESC, id DESC;

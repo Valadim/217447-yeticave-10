@@ -9,4 +9,4 @@ Thumbs.db
 vendor
 uploads/*
 !uploads/.gitkeep
-composer.phar
+config.php

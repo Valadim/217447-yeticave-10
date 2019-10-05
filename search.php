@@ -1,78 +1,65 @@
 <?php
-require_once('inc/init.php');
+require_once __DIR__ . '/starter.php';
 
-if ($_SERVER['REQUEST_METHOD'] === 'GET') {
-    $search = $_GET['search'] ?? '';
-    $search = trim($search);
-    $search_query = $search;
+$lotsPerPage = intval($config['lots_per_page']);
 
-    if (isset($search)) {
+$currentPage = getIntParam($_GET, 'page') ?? 1;
 
-        $page_items = 9;
-        $cur_page = $_GET['page'] ?? $_GET['page'] = 1;
+$query = $_GET['search'] ?? '';
 
-        $sql = "SELECT COUNT(l.id) AS cnt FROM lot l
-                JOIN category c ON l.category_id = c.id
-                WHERE MATCH(l.name, l.description) AGAINST(?) AND finish_date > NOW()";
-        $stmt = db_get_prepare_stmt($con, $sql, [$search]);
-        mysqli_stmt_execute($stmt);
-        $result = mysqli_stmt_get_result($stmt);
+$dbConnection = dbConnect($config['db']);
 
-        $items_count = mysqli_fetch_assoc($result)['cnt'];
-        $pages_count = ceil($items_count / $page_items);
-        $offset = ($cur_page - 1) * $page_items;
-        $pages = range(1, $pages_count);
+$categories = getCategories($dbConnection);
 
-        $sql = "SELECT MAX(b.price) AS max_bid, COUNT(b.price) AS bid_count, l.id,
-                l.date, l.name, l.img_path, l.start_price, c.name AS category_name, l.finish_date
-                FROM lot l JOIN category c ON l.category_id = c.id
-                LEFT JOIN bid b ON l.id = b.lot_id WHERE MATCH(l.name, l.description) AGAINST(?)
-                AND l.finish_date > NOW() GROUP BY l.id
-                ORDER BY l.date DESC LIMIT {$page_items} OFFSET {$offset}";
-
-        $stmt = db_get_prepare_stmt($con, $sql, [$search]);
-        mysqli_stmt_execute($stmt);
-        $result = mysqli_stmt_get_result($stmt);
-        $lots = mysqli_fetch_all($result, MYSQLI_ASSOC);
-
-        if (mysqli_num_rows($result) === 0) {
-
-            $search = 'Ничего не найдено по вашему запросу: ' . $search;
-        }
-
-        $page_content = include_template('search_tpl.php', [
-            'categories' => $categories,
-            'navigation' => $navigation,
-            'lots' => $lots,
-            'search' => $search,
-            'items_count' => $items_count,
-            'pages' => $pages,
-            'cur_page' => $cur_page,
-            'pages_count' => $pages_count,
-            'search_query' => $search_query
-        ]);
-
-
-    } else {
-        $page_content = include_template('search_tpl.php', [
-            'categories' => $categories,
-        ]);
+$lots = [];
+$pagesCount = 0;
+if ($query) {
+    $lotsCount = getSearchResultsCount($dbConnection, $query);
+    $pagesCount = (int)ceil($lotsCount / $lotsPerPage);
+    if ($pagesCount && $currentPage > $pagesCount) {
+        $currentPage = $pagesCount;
     }
-
-} else {
-    $page_content = include_template('search_tpl.php', [
-        'categories' => $categories
-    ]);
+    if ($lotsCount) {
+        $offset = ($currentPage - 1) * $lotsPerPage;
+        $lots = searchLots($dbConnection, $query, $offset, $lotsPerPage);
+    }
 }
 
-$layout_content = include_template('layout.php', [
-    'content' => $page_content,
-    'navigation' => $navigation,
-    'categories' => $categories,
-    'title' => 'Результаты поиска',
-    'search_query' => $search_query
-]);
+dbClose($dbConnection);
 
-print($layout_content);
+$pages = [];
+if ($pagesCount > 1) {
+    $pages = range(1, $pagesCount);
+}
 
-
+$navigation = includeTemplate('navigation.php', ['categories' => $categories]);
+$pagination = includeTemplate(
+    'pagination.php',
+    [
+        'pages' => $pages,
+        'currentPage' => $currentPage,
+        'script' => 'search.php',
+        'queryFields' => 'search=' . $query
+    ]
+);
+$mainContent = includeTemplate(
+    'search.php',
+    [
+        'navigation' => $navigation,
+        'pagination' => $pagination,
+        'lots' => $lots,
+        'query' => $query
+    ]
+);
+$layoutContent = includeTemplate(
+    'layout.php',
+    [
+        'pageTitle' => 'Результаты поиска',
+        'isAuth' => (bool)$sessUser,
+        'userName' => $sessUser['name'] ?? '',
+        'navigation' => $navigation,
+        'mainContent' => $mainContent,
+        'searchQuery' => $query
+    ]
+);
+print($layoutContent);

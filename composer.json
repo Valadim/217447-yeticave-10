@@ -1,12 +1,6 @@
 {
-    "name": "vadim/yeticave",
-    "description": "yeticave market",
-    "authors": [
-        {
-            "name": "Vadim Sa",
-            "email": "sakeyev@mail.ru"
-        }
-    ],
+    "name": "maximos/1114469-yeticave-10",
+    "type": "project",
     "require": {
         "swiftmailer/swiftmailer": "^6.2"
     }
