@@ -1,6 +1,9 @@
 <?php
 require_once __DIR__ . '/starter.php';
-require_once 'getwinner.php';
+// require_once 'getwinner.php';
+
+//Необходимо вначале установить библиотеку swiftmailer
+//после чего можно раскомментировать подключение сценария getwinner.php
 
 $dbConnection = dbConnect($config['db']);
 
